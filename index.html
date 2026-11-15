@@ -1,0 +1,869 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kebab Cosmique</title>
+<style>
+:root{--bg:#0d0b1e;--panel:#191536;--panel2:#231d4a;--line:#3a3170;--txt:#ece8ff;--dim:#9a92c9;--acc:#ff9d2e;--acc2:#b56bff;--ok:#5be38a;--bad:#ff5d73;--gold:#ffd84a}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 20% 0%,#2a1b5c 0,var(--bg) 55%) fixed;color:var(--txt);font:14px/1.35 system-ui,Segoe UI,sans-serif;min-height:100vh}
+h1,h2{margin:0}h2{font-size:13px;letter-spacing:.5px;text-transform:uppercase;color:var(--dim);margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+h2 small{text-transform:none;letter-spacing:0;font-weight:400;text-align:right}
+button{font:inherit;color:var(--txt);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:4px 9px;cursor:pointer;transition:.1s;touch-action:manipulation}
+button:hover:not(:disabled){border-color:var(--acc);transform:translateY(-1px)}
+button:active:not(:disabled){transform:scale(.95)}
+button:disabled{opacity:.35;cursor:not-allowed}
+button.pri{background:var(--acc);color:#221;border-color:var(--acc);font-weight:700}
+button.on{background:var(--acc2);border-color:var(--acc2)}
+button.glow{border-color:var(--gold);box-shadow:0 0 10px #ffd84a66}
+header{position:sticky;top:0;z-index:5;background:#120f2af2;border-bottom:1px solid var(--line);padding:8px 14px;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;backdrop-filter:blur(6px)}
+header .logo{font-weight:800;font-size:18px;color:var(--acc)}
+.stat{display:flex;flex-direction:column;gap:1px}.stat small{color:var(--dim);font-size:11px}.stat>b{font-size:17px}
+.stat.grow{flex:1;min-width:150px}
+.pbar{position:relative;height:18px;background:var(--panel2);border-radius:9px;overflow:hidden;border:1px solid var(--line)}
+.pbar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--acc2),var(--acc));width:0;transition:width .15s linear}
+.pbar span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;text-shadow:0 1px 2px #000}
+.pbar.ok i{background:linear-gradient(90deg,#2c9d5a,var(--ok))}.pbar.bad i{background:linear-gradient(90deg,#a32a45,var(--bad))}
+#event,#tuto{width:100%;font-size:12px;color:var(--dim)}#event b{color:var(--acc)}
+#tuto{background:#2a2160;border:1px solid var(--acc2);border-radius:8px;padding:5px 10px;color:var(--txt)}#tuto:empty{display:none}
+main{display:grid;grid-template-columns:minmax(340px,1.15fr) minmax(340px,1.3fr) minmax(260px,.9fr);gap:12px;padding:12px;align-items:start}
+@media(max-width:1150px){main{grid-template-columns:1fr 1fr}#side{grid-column:1/-1;columns:2;column-gap:16px}#side>*{break-inside:avoid}}
+@media(max-width:760px){main{grid-template-columns:1fr}#base{order:-1}#side{columns:1}}
+section{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;position:relative}
+.row{display:grid;grid-template-columns:26px minmax(0,1fr) 52px 62px auto;gap:5px;align-items:center;padding:4px 0;border-bottom:1px dashed #2c2558}
+.row.locked{opacity:.4}
+.row .ico{font-size:20px}.row .nm{overflow:hidden;line-height:1.2}.row .nm small{display:block;color:var(--dim);font-size:11px}
+.row .qt{text-align:right}.row .qt small{display:block;font-size:10px;color:var(--dim)}
+.row .pr{text-align:right;font-size:12px}
+.row .btns{display:flex;gap:4px}.row .btns button{padding:4px 7px}
+.up{color:var(--ok)!important}.down{color:var(--bad)!important}.warn{color:var(--acc)!important}
+#grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:6px 4px;text-align:center;cursor:pointer;min-height:132px;user-select:none;min-width:0;display:flex;flex-direction:column;align-items:stretch}
+.tile:hover{border-color:var(--acc)}
+.tile.empty{align-items:center;justify-content:center;color:var(--line);border-style:dashed;background:none;font-size:11px}
+.tile.empty b{font-size:26px;display:block;font-weight:400}
+.tile.empty:hover{color:var(--acc)}
+.assigning .tile:not(.empty),.moving .tile{border-color:var(--acc2);box-shadow:0 0 10px var(--acc2)}
+.tile.sel{border-color:var(--acc);box-shadow:0 0 12px var(--acc)}
+.tile.stuck{border-color:#7a3140}
+.te{font-size:24px}.tn{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tl{font-size:11px;color:var(--dim)}
+.tl .syn{color:var(--ok)}
+.bar{height:5px;background:#120f2a;border-radius:3px;margin:3px 4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--acc);width:0}
+.tile small{font-size:10px;color:var(--dim);flex:1}
+.upb{font-size:11px;padding:2px 4px;margin:2px 2px 0;border-radius:6px}
+.upb:not(:disabled){border-color:var(--ok);color:var(--ok)}
+.card{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 8px;margin-bottom:6px;display:flex;justify-content:space-between;gap:6px;align-items:center}
+.card small{color:var(--dim);display:block;font-size:11px}
+.card.order{border-color:#6a4a1f}.card.order.ready{border-color:var(--ok);box-shadow:0 0 8px #5be38a55}
+.card[draggable=true]{cursor:grab}
+#orders{margin-bottom:10px}
+#side h2{margin-top:12px}#side>div:first-child h2{margin-top:0}
+#log{font-size:12px;color:var(--dim)}#log div{padding:2px 0}#log div:first-child{color:var(--txt)}
+.chip{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:1px 8px;margin:2px 2px 2px 0;font-size:12px}
+.card .chip{background:var(--panel)}
+.chip.leg{border-color:var(--gold);color:var(--gold)}
+#modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:10;padding:14px}
+#modal.hidden{display:none}
+#mbox{background:var(--panel);border:1px solid var(--acc2);border-radius:14px;padding:18px;max-width:700px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 0 40px #b56bff55}
+#mbox h1{color:var(--acc);font-size:22px;margin-bottom:6px}#mbox p{color:var(--dim);margin:6px 0}#mbox p b{color:var(--txt)}
+#mbox h2{margin-top:12px}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px;margin:10px 0}
+.choice{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 10px;text-align:center;cursor:pointer;color:var(--txt)}
+.choice:hover:not(.off):not(:disabled){border-color:var(--acc);transform:translateY(-2px)}.choice .te{font-size:30px}.choice small{color:var(--dim);display:block;margin:2px 0}
+.choice.off{opacity:.4;cursor:not-allowed}.choice.done{border-color:var(--ok);opacity:.7;cursor:default}
+.choice.cur{border-color:var(--acc);box-shadow:0 0 8px #ff9d2e66}
+.choice.leg{border-color:var(--gold);box-shadow:0 0 14px #ffd84a44}
+#vip{position:absolute;font-size:34px;cursor:pointer;z-index:3;animation:bob .6s infinite alternate;filter:drop-shadow(0 0 8px var(--acc))}
+@keyframes bob{to{transform:translateY(-8px) rotate(8deg)}}
+#hint{color:var(--acc2);font-size:12px;margin-bottom:6px;min-height:16px}
+.float{position:fixed;pointer-events:none;z-index:20;font-weight:800;color:var(--gold);text-shadow:0 1px 3px #000;animation:fl .7s ease-out forwards}
+@keyframes fl{to{transform:translateY(-42px);opacity:0}}
+#toasts{position:fixed;right:12px;bottom:12px;z-index:30;display:flex;flex-direction:column;gap:6px;align-items:flex-end;pointer-events:none}
+.toast{background:var(--panel2);border:1px solid var(--acc);border-radius:10px;padding:8px 12px;max-width:320px;box-shadow:0 4px 14px #0008;animation:tin .25s ease-out}
+@keyframes tin{from{transform:translateX(40px);opacity:0}}
+kbd{background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:0 5px;font-size:11px}
+.help{font-size:11px;color:var(--dim);margin-top:8px}
+</style>
+</head>
+<body>
+<header>
+  <span class="logo">🌯 Kebab Cosmique</span>
+  <div class="stat"><small>Caisse</small><b id="money"></b><small id="income"></small></div>
+  <div class="stat grow"><small>Loyer + salaires ce soir <span id="dueTxt"></span></small><div class="pbar" id="rentbar"><i></i><span></span></div></div>
+  <div class="stat grow"><small>Jour <b id="day" style="color:var(--txt)"></b></small><div class="pbar" id="timer"><i></i><span></span></div></div>
+  <div class="stat"><small>Réputation</small><b id="rep"></b></div>
+  <div id="speeds"></div>
+  <button data-a="labo" id="laboBtn">🔬 Labo</button>
+  <button data-a="progress" title="Progression, succès, héritages">📖</button>
+  <div id="event"></div>
+  <div id="tuto"></div>
+</header>
+<main>
+  <section id="mk">
+    <h2>📦 Commandes du jour <small>payées ×2,5 · +5 % de réputation</small></h2><div id="orders"></div>
+    <h2>🧺 Stock &amp; marché <small>maintiens le bouton pour répéter · <kbd>Maj</kbd> = ×10</small></h2><div id="items"></div>
+  </section>
+  <section id="base"><h2>🪨 Ton astéroïde <button data-a="plot" id="plotBtn"></button></h2><div id="hint"></div><div id="grid"></div>
+    <div class="help">Clic : détails · glisser-déposer : déplacer · les voisins (haut, bas, gauche, droite) se donnent des bonus 🔗 · production ×2 aux niveaux 10, 25, 50 et 100</div></section>
+  <section id="side">
+    <div><h2>👽 Équipe <span id="staffN"></span></h2><div id="staff"></div></div>
+    <div><h2>📋 Candidats <button data-a="reroll" id="rerollBtn"></button></h2><div id="cands"></div></div>
+    <div><h2>✨ Bonus de la run</h2><div id="perks"></div></div>
+    <div><h2>📜 Journal</h2><div id="log"></div></div>
+  </section>
+</main>
+<div id="modal" class="hidden"><div id="mbox"></div></div>
+<div id="toasts"></div>
+<script>
+// ====== DONNÉES ======
+const ITEMS={
+  ver:{n:'Ver des sables',e:'🪱',v:2},
+  ble:{n:'Blé lunaire',e:'🌾',v:2},
+  plasma:{n:'Plasma tiède',e:'🧪',v:3},
+  oignon:{n:'Oignon mutant',e:'🧅',v:3},
+  glace:{n:'Glace de comète',e:'❄️',v:3},
+  viande:{n:'Broche de ver',e:'🍖',v:8,r:{ver:2}},
+  pain:{n:'Pain galactique',e:'🫓',v:8,r:{ble:2}},
+  sauce:{n:'Sauce Trou Noir',e:'🫙',v:12,r:{plasma:1,oignon:1}},
+  frites:{n:'Frites quantiques',e:'🍟',v:20,r:{oignon:2,plasma:1},lock:1},
+  soda:{n:'Soda de nébuleuse',e:'🥤',v:14,r:{glace:1,plasma:1},lock:1},
+  dessert:{n:'Sundae supraconducteur',e:'🍨',v:18,r:{glace:2,ble:1},lock:1},
+  kebab:{n:'Kebab cosmique',e:'🌯',v:60,r:{viande:1,pain:1,sauce:1}},
+  formule:{n:'Formule étudiante',e:'🥡',v:110,r:{kebab:1,soda:1},lock:1},
+  menu:{n:'Menu Supernova',e:'🍱',v:200,r:{kebab:1,frites:2},lock:1},
+  tacos:{n:'Tacos 12 dimensions',e:'🌮',v:700,r:{menu:2,sauce:3},lock:1},
+  festin:{n:'Festin galactique',e:'🍽️',v:2800,r:{tacos:1,soda:3,dessert:3},lock:1}
+};
+const RAW=['ver','ble','plasma','oignon','glace'],COLD=['soda','dessert','formule'];
+const RECIPES=Object.keys(ITEMS).filter(k=>ITEMS[k].r);
+const COLS=4,MILESTONES=[10,25,50,100];
+const B={
+  ver:{n:'Ferme à vers',e:'🪱',cost:50,kind:'ext',res:'ver'},
+  ble:{n:'Champ lunaire',e:'🌾',cost:50,kind:'ext',res:'ble'},
+  plasma:{n:'Pompe à plasma',e:'🧪',cost:75,kind:'ext',res:'plasma'},
+  oignon:{n:'Serre mutante',e:'🧅',cost:75,kind:'ext',res:'oignon'},
+  glace:{n:'Foreuse à comète',e:'❄️',cost:75,kind:'ext',res:'glace'},
+  cuisine:{n:'Robot-cuistot',e:'🤖',cost:150,kind:'craft'},
+  stand:{n:'Stand automatique',e:'🛸',cost:200,kind:'sell'},
+  hamster:{n:'Générateur à hamster',e:'🐹',cost:300,kind:'aura'}
+};
+const KIND_TXT={
+  ext:'🔗 +15 % par extracteur identique adjacent.',
+  craft:'🔗 +20 % par voisin qui produit un de ses ingrédients.',
+  sell:'🔗 +15 % sur le prix par voisin qui produit ce qu\'il vend.',
+  aura:'🔗 Accélère tous ses voisins (+25 %, puis +5 % par niveau).'
+};
+const SPEC={ext:'Fermier',craft:'Cuistot',sell:'Vendeur'};
+const PERKS={
+  vers:{n:'Vers dopés',e:'💉',d:'Extraction +30%'},
+  robots:{n:'Robots survoltés',e:'⚡',d:'Cuisine auto +30%'},
+  baratin:{n:'Baratin commercial',e:'🗣️',d:'Prix de vente +15%'},
+  doigts:{n:'Doigts cosmiques',e:'👆',d:'Puissance de clic ×2'},
+  bouche:{n:'Bouche-à-oreille',e:'📣',d:'Réputation +50% (le marché sature moins)'},
+  nego:{n:'Photos compromettantes du proprio',e:'📸',d:'Loyer -10%'},
+  syndicat:{n:'Syndicat dissous',e:'🧨',d:'Salaires -30%'},
+  heritage:{n:'Héritage douteux',e:'💰',d:'Cash immédiat (≈ un demi-loyer)',now:()=>{S.money+=rentAt(S.day+1)*.5}},
+  rallonge:{n:'Journée à rallonge',e:'⏰',d:'+10 s par jour'},
+  squat:{n:'Terrain squatté',e:'🚩',d:'+1 parcelle gratuite',now:()=>{if(S.plots.length<maxPlots())S.plots.push(null)}},
+  pigeon:{n:'Pigeon stagiaire',e:'🐦',d:'Récolte 1 de chaque ressource brute /s'},
+  lits:{n:'Lits superposés',e:'🛏️',d:'+1 place d\'employé'},
+  traiteur:{n:'Traiteur de l\'espace',e:'🧾',d:'Commandes payées +40%'},
+  bourse:{n:'Bourse d\'études',e:'🎓',d:'Recherches du Labo -20%'},
+  formation:{n:'Formation accélérée',e:'📚',d:'Les employés gagnent 2× plus d\'ancienneté'},
+  soldes:{n:'Chantier au noir',e:'🧱',d:'Améliorations de bâtiments -10%'},
+  glacier:{n:'Chaîne du froid',e:'🧊',d:'Sodas, sundaes et formules +50% de valeur'},
+  fidelite:{n:'Carte de fidélité',e:'💳',d:'Réputation +3% par jour écoulé'},
+  pourboire:{n:'Bocal à pourboires',e:'🫙',d:'Clients pressés 2× plus généreux'},
+  interets:{n:'Livret Ⱥ',e:'🏦',d:'Chaque matin : +5% de la caisse (max un demi-loyer)'},
+  midas:{leg:1,n:'Louche de Midas',e:'🥄',d:'Prix de vente +40%'},
+  singul:{leg:1,n:'Singularité culinaire',e:'🧠',d:'Cuisine auto ×2'},
+  friteuse:{leg:1,n:'Friteuse à antimatière',e:'⚛️',d:'Tous les plats cuisinés valent +30%'},
+  clone:{leg:1,n:'Clonage d\'employés',e:'🧬',d:'Bonus des employés ×1,5'},
+  trou:{leg:1,n:'Trou de ver logistique',e:'🌀',d:'Synergies d\'adjacence doublées'},
+  noir:{leg:1,n:'Marché noir',e:'🕶️',d:'Les prix s\'effondrent moins (plancher +20 pts)'},
+  pacte:{leg:1,n:'Pacte avec le proprio',e:'🤝',d:'Loyer -25% à vie'},
+  fantome:{leg:1,n:'Usine fantôme',e:'👻',d:'+3 niveaux gratuits sur chaque bâtiment',now:()=>{S.plots.forEach(b=>{if(b)b.lvl+=3})}}
+};
+const TECH={
+  frites:{n:'Brevet : Frites quantiques',e:'🍟',c:300,d:'Débloque la recette'},
+  import:{n:'Licence d\'import',e:'🚚',c:500,d:'Acheter des ressources brutes au marché'},
+  soda:{n:'Brevet : Soda de nébuleuse',e:'🥤',c:600,d:'Débloque la recette'},
+  dessert:{n:'Brevet : Sundae supraconducteur',e:'🍨',c:900,d:'Débloque la recette'},
+  engrais:{n:'Engrais radioactif',e:'☢️',c:1200,d:'Extraction +40%'},
+  menu:{n:'Brevet : Menu Supernova',e:'🍱',c:2500,d:'Débloque la recette',req:'frites'},
+  tapis:{n:'Tapis roulant',e:'🛼',c:4000,d:'Cuisine auto +40%'},
+  drive:{n:'Drive orbital',e:'🛰️',c:6000,d:'Stands 2× plus rapides, réputation +25%'},
+  assurance:{n:'Assurance loyers impayés',e:'🛟',c:8000,d:'Une fois : un loyer impayé est offert'},
+  engrais2:{n:'Vers OGM',e:'🧫',c:20000,d:'Extraction +60%',req:'engrais'},
+  tacos:{n:'Brevet : Tacos 12 dimensions',e:'🌮',c:30000,d:'Débloque la recette',req:'menu'},
+  tapis2:{n:'Cuisine à téléportation',e:'✨',c:40000,d:'Cuisine auto +60%',req:'tapis'},
+  formule:{n:'Brevet : Formule étudiante',e:'🥡',c:5000,d:'Débloque la recette',req:'soda'},
+  pub:{n:'Pub sur la face cachée de la Lune',e:'🌘',c:60000,d:'Réputation ×2',req:'drive'},
+  festin:{n:'Brevet : Festin galactique',e:'🍽️',c:150000,d:'Débloque la recette',req:'tacos'}
+};
+const ARCH={
+  trad:{n:'Kebabier traditionnel',e:'🥙',d:'+150 ₭ de départ. Simple, efficace.',cash:150},
+  frites:{n:'Baraque à frites',e:'🍟',d:'Frites déjà brevetées et vendues ×3. Kebabs −20 %.',val:{frites:3,kebab:.8},tech:['frites']},
+  truck:{n:'Food-truck manuel',e:'🖱️',d:'Clic ×3. Bâtiments 25 % plus chers.',click:3,cost:1.25},
+  dark:{n:'Dark kitchen',e:'🤖',d:'Cuisine auto +50 %. Prix de vente −10 %.',craft:1.5,price:.9},
+  interim:{n:'Agence d\'intérim',e:'👔',d:'+2 places d\'employés, salaires −50 %. Extraction −15 %.',staff:2,wage:.5,ext:.85},
+  neveu:{n:'Neveu du proprio',e:'🏦',d:'Loyer −20 %. Réputation −25 %.',rent:.8,rep:.75},
+  glacier:{n:'Glacier ambulant',e:'🍦',d:'Soda et sundae déjà brevetés et vendus ×2. Extraction −10 %.',val:{soda:2,dessert:2},tech:['soda','dessert'],ext:.9},
+  gastro:{n:'Bistronomie moléculaire',e:'🍷',d:'Plats cuisinés +50 % de valeur. Réputation −40 %.',gval:1.5,rep:.6,unl:0},
+  usine:{n:'Usine à kebabs',e:'🏭',d:'Extraction et cuisine +30 %. Prix de vente −25 %.',ext:1.3,craft:1.3,price:.75,unl:1},
+  luxe:{n:'Kebab à la feuille d\'or',e:'💎',d:'Prix de vente +40 %. Loyer +30 %.',price:1.4,rent:1.3,unl:2},
+  radin:{n:'Self-service intégral',e:'🪙',d:'Aucun employé possible. Bâtiments 30 % moins chers.',staff:-99,cost:.7,unl:3}
+};
+const EVENTS=[
+  {n:'Journée calme',d:'Rien à signaler. C\'est louche.'},
+  {n:'Convention de touristes vénusiens',d:'Prix de vente +30%',price:1.3},
+  {n:'Inspection sanitaire galactique',d:'Prix de vente -20%',price:.8},
+  {n:'Pluie de vers',d:'Extraction +50%',ext:1.5},
+  {n:'Grève des oignons mutants',d:'Extraction -30%',ext:.7},
+  {n:'Mise à jour des robots',d:'Cuisine auto +50%',craft:1.5},
+  {n:'Robots en dépression',d:'Cuisine auto -30%',craft:.7},
+  {n:'Finale de foot intergalactique',d:'Réputation ×2 : tout le monde a faim',rep:2},
+  {n:'Soldes interstellaires',d:'Améliorations de bâtiments -25% aujourd\'hui',up:.75},
+  {n:'Canicule solaire',d:'Sodas, sundaes et formules valent ×2',cold:2},
+  {n:'Marée de plasma',d:'Extraction +30%, cuisine auto +30%',ext:1.3,craft:1.3},
+  {n:'Krach du ver des sables',d:'Prix -35%, mais réputation ×1,5',price:.65,rep:1.5}
+];
+const BOSS={n:'👹 Visite du Proprio en personne',d:'Loyer ×1,5 ce soir — mais un bonus LÉGENDAIRE si tu survis',boss:1};
+// Dilemmes du matin : chaque option = [titre, effet décrit, fonction]
+const DILEMMAS=[
+  ()=>({t:'🐦 Un pigeon usurier se pose sur ta caisse',d:'« Besoin de liquide, chef ? Remboursement ce soir, sans faute. »',o:[
+    ['Emprunter',`+${fmt(rent())} ₭ tout de suite, loyer de ce soir +50 %`,()=>{S.money+=rent();S.dm.rent*=1.5}],
+    ['Le chasser','Rien ne se passe',()=>{}]]}),
+  ()=>({t:'🧐 Un critique gastronomique réclame une « attention »',d:'Il tapote son carnet d\'un air entendu.',o:[
+    ['Glisser une enveloppe',`−${fmt(S.money*.3)} ₭, réputation +25 % pour toute la run`,()=>{S.money*=.7;S.repB+=.25}],
+    ['Le servir honnêtement','1 chance sur 2 : réputation +10 %, sinon prix −10 % aujourd\'hui',()=>{if(Math.random()<.5){S.repB+=.1;toast('🧐 Il a adoré. Réputation +10 %.')}else{S.dm.price*=.9;toast('🧐 « Trop de ver. » Prix −10 % aujourd\'hui.')}}]]}),
+  ()=>({t:'☢️ Une cuve de déchets fuit sur tes cultures',d:'Les vers font soudain 40 cm de plus.',o:[
+    ['Ne rien nettoyer','Extraction ×2 aujourd\'hui, mais prix −20 %',()=>{S.dm.ext*=2;S.dm.price*=.8}],
+    ['Tout désinfecter','Rien ne se passe',()=>{}]]}),
+  ()=>({t:'🎰 Un casino flottant s\'amarre à l\'astéroïde',d:'« Quitte ou double sur la roulette à gravité variable ! »',o:[
+    ['Miser la moitié de la caisse',`1 chance sur 2 : +${fmt(S.money*.5)} ₭, sinon −${fmt(S.money*.5)} ₭`,()=>{const m=S.money*.5;if(Math.random()<.5){S.money+=m;toast('🎰 Gagné ! +'+fmt(m)+' ₭')}else{S.money-=m;toast('🎰 Perdu. −'+fmt(m)+' ₭')}}],
+    ['Passer son chemin','Rien ne se passe',()=>{}]]}),
+  ()=>({t:'🧒 Un stagiaire a été oublié devant ta porte',d:'Il a un mot épinglé : « Nourrissez-le parfois. »',o:[
+    S.staff.length<staffMax()?['L\'adopter','Employé gratuit (Feignasse, 0 ₭/jour)',()=>{S.staff.push({name:'Stagiaire oublié',trait:'Feignasse',mult:.7,wage:0,spec:null,xp:0,at:null})}]:['L\'adopter','Équipe pleine…',null],
+    ['Le revendre à un cirque',`+${fmt(rent()*.3)} ₭`,()=>{S.money+=rent()*.3}]]}),
+  ()=>({t:'🏴‍☠️ Un contrebandier ouvre son manteau',d:'« J\'achète tout, je vends de tout. »',o:[
+    ['Lui vendre tout ton stock','Tout part à 1,6× la valeur de base, sans faire chuter les cours',()=>{let g=0;for(const k in ITEMS){g+=Math.floor(S.inv[k])*val(k)*1.6;S.inv[k]-=Math.floor(S.inv[k])}S.money+=g;S.earned+=g;toast('🏴‍☠️ Stock vendu : +'+fmt(g)+' ₭')}],
+    ['Acheter une cargaison',`−${fmt(S.money*.2)} ₭ contre ${20*S.day} de chaque ressource brute`,()=>{S.money*=.8;RAW.forEach(k=>S.inv[k]+=20*S.day)}],
+    ['L\'ignorer','Rien ne se passe',()=>{}]]}),
+  ()=>({t:'✊ Tes robots menacent de faire grève',d:'Ils réclament de l\'huile bio et des RTT.',o:[
+    ['Céder','Salaires ×2 ce soir, cuisine auto +50 % aujourd\'hui',()=>{S.dm.wage*=2;S.dm.craft*=1.5}],
+    ['Tenir bon','Cuisine auto −30 % aujourd\'hui',()=>{S.dm.craft*=.7}]]}),
+  ()=>({t:'🚌 Un car de touristes est en panne devant chez toi',d:'Ils ont faim, mais ils comparent les prix.',o:[
+    ['Happy hour','Prix −25 %, réputation ×2 aujourd\'hui (gros volumes)',()=>{S.dm.price*=.75;S.dm.rep*=2}],
+    ['Prix « spécial touristes »','Prix +25 %, réputation ÷2 aujourd\'hui',()=>{S.dm.price*=1.25;S.dm.rep*=.5}],
+    ['Business as usual','Rien ne se passe',()=>{}]]}),
+  ()=>{const c=rent()*.6,ok=S.staff.length<staffMax()&&S.money>=c;return{t:'🕴️ Un chasseur de têtes rôde près du stand',d:'« J\'ai un profil rare. Très rare. Un peu instable. »',o:[
+    ['Signer le chèque',ok?`−${fmt(c)} ₭ : un Génie incompris rejoint l'équipe (${fmt(Math.round(60*Math.pow(1.3,S.day-1)))} ₭/jour)`:'Pas de place ou pas assez de caisse…',ok?()=>{S.money-=c;S.hired=1;S.staff.push({name:pick(NAMES),trait:'Génie incompris',mult:3.5,wage:Math.round(60*Math.pow(1.3,S.day-1)),spec:pick(['ext','craft','sell']),xp:0,at:null})}:null],
+    ['Décliner poliment','Rien ne se passe',()=>{}]]}},
+  ()=>{const av=Object.keys(TECH).filter(k=>!S.tech[k]&&(!TECH[k].req||S.tech[TECH[k].req]));return{t:'🧪 Un savant fou propose un « raccourci »',d:'Sa blouse fume légèrement.',o:[
+    ['Financer ses travaux',av.length?`−${fmt(S.money*.4)} ₭ : une recherche du Labo au hasard, offerte`:'Plus rien à chercher…',av.length?()=>{const k=pick(av);S.money*=.6;S.tech[k]=1;toast('🧪 Eurêka : '+TECH[k].e+' '+TECH[k].n)}:null],
+    ['Appeler la sécurité','Rien ne se passe',()=>{}]]}},
+  ()=>({t:'🌠 Une comète frôle l\'astéroïde',d:'Elle laisse une traînée de glace… et de touristes.',o:[
+    ['Récolter la glace',`+${40*S.day} ❄️ Glace de comète`,()=>{S.inv.glace+=40*S.day}],
+    ['Vendre des selfies','Réputation +15 % pour toute la run',()=>{S.repB+=.15}]]})
+];
+const TRAITS=[['Feignasse',.7,4,30],['Stagiaire',1.25,8,30],['Bosseur',1.6,18,22],['Hyperactif',2.2,40,12],['Génie incompris',3.5,110,6]];
+const NAMES=['Zorg','Blip','Gérard','Mme Tentacule','Kevin-9000','Xül','Bob le Slime','Josiane','Ploup','Dr Morve','Glorb','Maurice (un pigeon)','Sœur Quasar','Tonton Neutron'];
+const CLIENTS=['Un mariage de limaces','La cantine de l\'Étoile Noire','Un car de retraités martiens','Le club de tricot des Grands Anciens','Une IA qui « veut comprendre »','Les pompiers de Saturne','Un trou noir affamé','Le comité des fêtes de Pluton'];
+const META={
+  capital:{n:'Pot-de-vin de départ',d:'+50 ₭ au départ',max:10,c:l=>2+l*2},
+  prod:{n:'Vers génétiquement motivés',d:'+10% production',max:30,c:l=>3+l*3},
+  prix:{n:'Carte de visite holographique',d:'+5% prix de vente',max:30,c:l=>3+l*3},
+  rep:{n:'Faux avis 5 étoiles',d:'+5% réputation',max:20,c:l=>4+l*4},
+  etoile:{n:'Ami au guide Michelin parallèle',d:'+10% d\'Étoiles Noires gagnées',max:10,c:l=>10+l*10},
+  jour:{n:'Horloge trafiquée',d:'+2 s par journée',max:5,c:l=>8+l*8},
+  clic:{n:'Tentacule supplémentaire',d:'+1 par clic',max:10,c:l=>2+l*2},
+  labo:{n:'Diplôme acheté en ligne',d:'Recherches du Labo -8%',max:5,c:l=>4+l*4},
+  parcelle:{n:'Cadastre falsifié',d:'+1 parcelle au départ',max:4,c:l=>6+l*6},
+  staff:{n:'Dortoir clandestin',d:'+1 place d\'employé',max:3,c:l=>8+l*8},
+  choix:{n:'Boule de cristal',d:'+1 choix de bonus et d\'enseigne',max:1,c:()=>15}
+};
+const TUTO=[
+  ['Récolte 2 🪱 vers des sables (bouton « Récolter » — tu peux le maintenir enfoncé)',()=>S.inv.ver>=2||S.made.viande],
+  ['Cuisine une 🍖 Broche de ver',()=>S.made.viande],
+  ['Vends quelque chose au marché (bouton « Vendre »)',()=>S.earned>0],
+  ['Assemble un 🌯 Kebab cosmique : broche + pain + sauce',()=>S.made.kebab],
+  ['Construis ton premier bâtiment sur une parcelle ＋ de l\'astéroïde',()=>S.plots.some(b=>b)],
+  ['Crée une synergie 🔗 : pose un Robot-cuistot à côté d\'un bâtiment qui produit son ingrédient',()=>S.plots.some((b,i)=>b&&(adjBonus(i).sp>1||adjBonus(i).pr>1))],
+  ['Embauche un employé et affecte-le à un bâtiment (glisse sa carte dessus)',()=>S.staff.some(s=>s.at!=null)],
+  ['Achète une recherche au 🔬 Labo',()=>Object.keys(S.tech).length>(ARCH[S.arch].tech||[]).length]
+];
+const WORLDS=[
+  {n:'Astéroïde B-612 bis',e:'🪨',d:'La banlieue galactique. Règles normales.',rent:1,win:25},
+  {n:'Lune de Fromage',e:'🧀',d:'Extraction +25 %, cuisine −20 %.',rent:1.4,win:25,ext:1.25,craft:.8},
+  {n:'Station Périph\'',e:'🛰️',d:'2 parcelles en moins, réputation +50 %.',rent:1.8,win:25,plots:-2,rep:1.5},
+  {n:'Ceinture de Graillon',e:'☄️',d:'Cours du marché 2× plus instables. Clic ×2.',rent:2.3,win:28,vol:2,click:2},
+  {n:'Géante Gazeuse',e:'🪐',d:'Journées de 45 s. Tout se vend +30 %.',rent:2.8,win:28,dayLen:45,val:1.3},
+  {n:'Nébuleuse Fiscale',e:'🌫️',d:'Salaires ×3, mais +2 places d\'employés.',rent:3.5,win:30,wage:3,staff:2},
+  {n:'Trou Noir Central',e:'🕳️',d:'Le marché sature 2× plus vite. Prix +25 %.',rent:4.5,win:30,sat:2,price:1.25},
+  {n:'Dimension Kebab',e:'🌀',d:'Le Proprio vient tous les 3 jours (et laisse un légendaire).',rent:6,win:30,boss:3}
+];
+const KEYS={
+  depart:{n:'Terrain viabilisé',d:'Démarre avec une Ferme à vers et un Champ lunaire',c:3},
+  labo0:{n:'Douanier complice',d:'Démarre avec la Licence d\'import',c:3},
+  vip:{n:'Aimant à pigeons',d:'Clients pressés 2× plus fréquents et 2× plus généreux',c:4},
+  xp:{n:'École hôtelière',d:'Les candidats arrivent avec 3 d\'ancienneté',c:4},
+  ordres:{n:'Carnet d\'adresses',d:'+1 commande par jour',c:5},
+  reroll:{n:'Fouille approfondie',d:'1 relance des bonus chaque soir',c:6},
+  plots:{n:'Extension illégale',d:'Astéroïde agrandi : jusqu\'à 24 parcelles',c:8},
+  heritage2:{n:'Compte aux îles Caïmans de Jupiter',d:'Démarre avec +1000 ₭',c:10},
+  ms:{n:'Rodage parfait',d:'Les paliers de niveau donnent ×2,5 au lieu de ×2',c:12},
+  leg:{n:'Relique familiale',d:'Démarre chaque run avec un bonus légendaire au hasard',c:15}
+};
+const mkA=(id,n,d,r,f)=>({id,n,d,r,f});
+const ACH=[
+  ...[5,10,15,20,25,30,40,50].map((d,i)=>mkA('d'+d,'Survivant du jour '+d,'Atteindre le jour '+d,3+i*3,()=>S.day>=d)),
+  ...[1e4,1e5,1e6,1e7,1e8,1e9].map((v,i)=>mkA('e'+i,'Recette de '+fmt(v),'Gagner '+fmt(v)+' ₭ en une seule run',4+i*4,()=>S.earned>=v)),
+  ...[1e6,1e8,1e10].map((v,i)=>mkA('t'+i,'Empire de '+fmt(v),'Cumuler '+fmt(v)+' ₭ sur toutes les runs',10+i*15,()=>meta.total+S.earned>=v)),
+  ...[10,50,100].map((v,i)=>mkA('r'+i,v+' déménagements','Terminer '+v+' runs',5+i*10,()=>meta.runs>=v)),
+  ...[1,5,20,50,88].map((v,i)=>mkA('w'+i,v+(v>1?' baux rachetés':' bail racheté'),'Remporter '+v+' victoire(s) différente(s) (monde × piment)',5+i*10,()=>nClears()>=v)),
+  ...[10,100,500].map((v,i)=>mkA('o'+i,'Traiteur '+v,'Livrer '+v+' commandes au total',4+i*8,()=>meta.orders>=v)),
+  ...MILESTONES.map((v,i)=>mkA('l'+v,'Niveau '+v,'Monter un bâtiment au niveau '+v,4+i*6,()=>S.plots.some(b=>b&&b.lvl>=v))),
+  mkA('tech','Prix Nobel de friture','Acheter toutes les recherches en une run',20,()=>Object.keys(TECH).every(k=>S.tech[k])),
+  mkA('leg3','Collectionneur','Posséder 3 bonus légendaires en une run',15,()=>Object.keys(S.perks).filter(k=>PERKS[k].leg).reduce((a,k)=>a+S.perks[k],0)>=3),
+  mkA('staff6','DRH','Employer 6 aliens en même temps',10,()=>S.staff.length>=6),
+  mkA('xp10','Employé du mois','Un employé atteint 10 d\'ancienneté',10,()=>S.staff.some(s=>s.xp>=10)),
+  mkA('full','Bétonneur','Avoir 20 bâtiments en même temps',15,()=>S.plots.filter(b=>b).length>=20),
+  mkA('syn','Urbaniste','Obtenir une synergie de +100 % ou plus',10,()=>S.plots.some((b,i)=>b&&adjBonus(i).sp>=2)),
+  mkA('vip','Physionomiste','Attraper 50 clients pressés au total',8,()=>meta.vip>=50),
+  mkA('festin','Chef triplement étoilé','Cuisiner un Festin galactique',15,()=>!!S.made.festin),
+  mkA('rich','Matelas bien garni','Avoir 1 M₭ en caisse',10,()=>S.money>=1e6),
+  mkA('nostaff','Auto-entrepreneur','Gagner sans jamais embaucher',20,()=>S.won&&!S.hired),
+  mkA('nolabo','À l\'ancienne','Gagner sans rien acheter au Labo',20,()=>S.won&&!S.nTech),
+  mkA('archs','Franchiseur','Gagner avec chaque enseigne',40,()=>Object.keys(ARCH).every(k=>meta.archWins[k])),
+  mkA('worlds','Conquérant','Gagner sur chaque monde',40,()=>WORLDS.every((w,i)=>meta.wins[i+'_0']))
+];
+const RENT0=200,RENTG=1.2,RENTP=1.3,UPG=1.35,VER=4;
+
+// ====== ÉTAT ======
+const $=id=>document.getElementById(id);
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>a.slice().sort(()=>Math.random()-.5);
+function fmt(n){
+  if(n<0)return '-'+fmt(-n);
+  if(n<1000)return n<100&&n%1?n.toFixed(1):Math.floor(n)+'';
+  const u=['K','M','Md','T','Qa','Qi'];let i=-1;
+  while(n>=1000&&i<u.length-1){n/=1000;i++}
+  return n>=1000?n.toExponential(2):n.toFixed(n<10?2:n<100?1:0)+u[i];
+}
+const pct=x=>(x>=1?'+':'')+Math.round((x-1)*100)+'%';
+let meta={stars:0,best:0,up:{},tuto:0,wins:{},keys:0,kup:{},ach:{},made:{},sel:{},archWins:{},runs:0,total:0,orders:0,vip:0,time:0};
+try{Object.assign(meta,JSON.parse(localStorage.getItem('kebabcosmique_meta')||'{}'))}catch(e){}
+const mu=k=>meta.up[k]||0;
+function saveMeta(){try{localStorage.setItem('kebabcosmique_meta',JSON.stringify(meta))}catch(e){}}
+function saveRun(){try{if(S&&!S.block&&!S.over)localStorage.setItem('kebabcosmique_run',JSON.stringify(S))}catch(e){}}
+function loadRun(){try{const r=JSON.parse(localStorage.getItem('kebabcosmique_run'));return r&&r.v===VER?r:null}catch(e){return null}}
+function clearRun(){try{localStorage.removeItem('kebabcosmique_run')}catch(e){}}
+let S,vipT=null,dilFns=[],flowCache={},frame=0,selW=0,selH=0,progBack=null;
+const mkB=t=>({type:t,lvl:1,prog:0,recipe:'viande',sell:'kebab',st:''});
+const world=()=>WORLDS[S.world||0];
+const isBoss=d=>d%(world().boss||5)===0;
+const maxPlots=()=>meta.kup.plots?24:20;
+const mThr=(k,l)=>Math.ceil(2000*Math.pow(8,l)/Math.pow(ITEMS[k].v/8,.8));
+const mLvl=k=>{let l=0;while(l<5&&(meta.made[k]||0)>=mThr(k,l))l++;return l};
+const cleared=(w,h)=>!!meta.wins[w+'_'+h];
+const maxHeat=w=>{let h=0;while(h<10&&cleared(w,h))h++;return h};
+const worldOpen=w=>w===0||cleared(w-1,0);
+function nClears(){return Object.keys(meta.wins).length}
+
+function newRun(arch='trad',wi=0,heat=0){
+  const a=ARCH[arch];
+  S={v:VER,arch,world:wi,heat,won:false,money:40+50*mu('capital')+(a.cash||0)+(meta.kup.heritage2?1000:0),day:1,t:60,tt:0,inv:{},trend:{},prev:{},sat:{},plots:[],bought:0,staff:[],cands:[],orders:[],
+     perks:{},tech:{},made:{},dm:{ext:1,craft:1,price:1,rent:1,wage:1,rep:1},event:EVENTS[0],speed:1,prevSpeed:1,block:true,assigning:null,moving:null,
+     earned:0,dayStart:0,ema:0,repB:0,tuto:meta.tuto?99:0,log:[],modal:null,over:null};
+  (a.tech||[]).forEach(t=>S.tech[t]=1);
+  for(const k in ITEMS){S.inv[k]=0;S.trend[k]=1;S.prev[k]=1;S.sat[k]=1}
+  for(let i=0;i<9+mu('parcelle')+(WORLDS[wi].plots||0);i++)S.plots.push(null);
+  S.t=dayLen();
+  if(meta.kup.depart){S.plots[0]=mkB('ver');S.plots[1]=mkB('ble')}
+  if(meta.kup.labo0)S.tech.import=1;
+  if(meta.kup.leg)S.perks[pick(['friteuse','clone','trou','noir','pacte','midas','singul'])]=1;
+  genCands();genOrders();
+  log('Bienvenue sur l\'astéroïde B-612 bis. Le proprio passe ce soir.');
+}
+const pk=k=>S.perks[k]||0;
+const arch=()=>ARCH[S.arch]||{};
+function mods(){
+  const ev=S.event,a=arch(),w=world(),dm=S.dm,T=S.tech,p=1+.1*mu('prod');
+  return{ext:p*Math.pow(1.3,pk('vers'))*(ev.ext||1)*(a.ext||1)*dm.ext*(T.engrais?1.4:1)*(T.engrais2?1.6:1)*(w.ext||1),
+    craft:p*Math.pow(1.3,pk('robots'))*(ev.craft||1)*(a.craft||1)*dm.craft*(T.tapis?1.4:1)*(T.tapis2?1.6:1)*(w.craft||1)*Math.pow(2,pk('singul')),
+    price:(1+.05*mu('prix'))*Math.pow(1.15,pk('baratin'))*(ev.price||1)*(a.price||1)*dm.price*(w.price||1)*Math.pow(1.4,pk('midas')),
+    click:(1+mu('clic'))*Math.pow(2,pk('doigts'))*(a.click||1)*(w.click||1),
+    sell:T.drive?2:1,
+    rep:(1+.25*(S.day-1))*(1+S.repB)*Math.pow(1.5,pk('bouche'))*(ev.rep||1)*(a.rep||1)*dm.rep*(T.drive?1.25:1)*(T.pub?2:1)*(w.rep||1)*(1+.05*mu('rep'))*(1+.03*S.day*pk('fidelite'))};
+}
+const rentAt=d=>RENT0*Math.pow(d,RENTP)*Math.pow(RENTG,d-1)*Math.pow(.9,pk('nego'))*Math.pow(.75,pk('pacte'))*(arch().rent||1)*world().rent*Math.pow(1.12,S.heat||0)*(isBoss(d)?1.5:1);
+const rent=()=>rentAt(S.day)*S.dm.rent;
+const wages=()=>S.staff.reduce((a,s)=>a+s.wage,0)*Math.pow(.7,pk('syndicat'))*(arch().wage||1)*S.dm.wage*(world().wage||1)*(1+.1*(S.heat||0));
+const dayLen=()=>(world().dayLen||60)+10*pk('rallonge')+2*mu('jour');
+const staffMax=()=>Math.max(0,3+mu('staff')+pk('lits')+(arch().staff||0)+(world().staff||0));
+const unlocked=k=>!ITEMS[k].lock||!!S.tech[k];
+const val=k=>ITEMS[k].v*(ITEMS[k].r?Math.pow(1.3,pk('friteuse'))*(arch().gval||1)*(1+.03*mLvl(k)):1)*((arch().val||{})[k]||1)*(world().val||1)*(COLD.includes(k)?Math.pow(1.5,pk('glacier'))*(S.event.cold||1):1);
+const price=k=>val(k)*S.trend[k]*Math.min(1,S.sat[k])*mods().price;
+const buyPrice=k=>val(k)*S.trend[k]*Math.max(1,S.sat[k])*1.5*mods().price;
+const satFloor=()=>Math.min(.85,.4+.2*pk('noir'));
+const count=t=>S.plots.filter(b=>b&&b.type===t).length;
+const buildCost=t=>B[t].cost*Math.pow(1.3,count(t))*(arch().cost||1);
+const upCost=b=>B[b.type].cost*Math.pow(UPG,b.lvl)*Math.pow(.9,pk('soldes'))*(S.event.up||1);
+const plotCost=()=>400*Math.pow(1.8,S.bought);
+const techCost=k=>TECH[k].c*Math.pow(.92,mu('labo'))*Math.pow(.8,pk('bourse'));
+const msMult=l=>Math.pow(meta.kup.ms?2.5:2,MILESTONES.filter(m=>l>=m).length);
+const nextMs=l=>MILESTONES.find(m=>l<m);
+const workerOf=i=>S.staff.find(s=>s.at===i);
+const empMult=(s,kind)=>(s.mult+.08*s.xp)*(s.spec&&s.spec===kind?1.4:1)*Math.pow(1.5,pk('clone'));
+const wMult=i=>{const w=workerOf(i);return w?empMult(w,B[S.plots[i].type].kind):1};
+const auraPow=b=>.2+.05*b.lvl;
+function neigh(i){const r=[i-COLS,i+COLS];if(i%COLS)r.push(i-1);if(i%COLS<COLS-1)r.push(i+1);return r.filter(j=>j>=0&&j<S.plots.length&&S.plots[j])}
+function produces(b){const d=B[b.type];return d.kind==='ext'?d.res:d.kind==='craft'?b.recipe:null}
+function adjBonus(i){
+  const b=S.plots[i],d=B[b.type];let sp=0,pr=0;
+  if(d.kind!=='aura')for(const j of neigh(i)){
+    const o=S.plots[j],od=B[o.type];
+    if(od.kind==='aura'){sp+=auraPow(o);continue}
+    const p=produces(o);
+    if(d.kind==='ext'&&o.type===b.type)sp+=.15;
+    if(d.kind==='craft'&&p&&ITEMS[b.recipe].r[p])sp+=.2;
+    if(d.kind==='sell'&&p===b.sell)pr+=.15;
+  }
+  const k=1+pk('trou');return{sp:1+sp*k,pr:1+pr*k};
+}
+function maxCraft(k){let m=Infinity;for(const i in ITEMS[k].r)m=Math.min(m,Math.floor(S.inv[i]/ITEMS[k].r[i]));return m}
+function doCraft(k,n){for(const i in ITEMS[k].r)S.inv[i]-=ITEMS[k].r[i]*n;S.inv[k]+=n;S.made[k]=1;meta.made[k]=(meta.made[k]||0)+n}
+function sell(k,n,factor=1){
+  n=Math.min(n,Math.floor(S.inv[k]));if(n<=0)return 0;
+  const s0=S.sat[k],s1=Math.max(satFloor(),s0-n*.012*(world().sat||1)/mods().rep);
+  S.sat[k]=(s0+s1)/2;const g=n*price(k)*factor;S.sat[k]=s1;
+  S.inv[k]-=n;S.money+=g;S.earned+=g;return g;
+}
+function log(t){S.log.unshift(t);S.log.length=Math.min(S.log.length,10);if($('log'))$('log').innerHTML=S.log.map(l=>`<div>${l}</div>`).join('')}
+function toast(t){const d=document.createElement('div');d.className='toast';d.innerHTML=t;$('toasts').appendChild(d);setTimeout(()=>d.remove(),4000)}
+function genCands(){
+  S.cands=[];
+  for(let i=0;i<3;i++){
+    let r=Math.random()*100,t;for(t of TRAITS){if((r-=t[3])<0)break}
+    S.cands.push({name:pick(NAMES),trait:t[0],mult:t[1],wage:Math.round(t[2]*Math.pow(1.3,S.day-1)),spec:pick(['ext','craft','sell',null,null]),xp:meta.kup.xp?3:0,at:null});
+  }
+}
+function genOrders(){
+  const cap=S.day<3?20:S.day<6?60:S.day<10?200:S.day<15?700:1e9;
+  const pool=RECIPES.filter(k=>ITEMS[k].v<=cap&&unlocked(k));
+  S.orders=[];
+  for(let i=0;i<(S.day>=4?3:2)+(meta.kup.ordres?1:0);i++){
+    const k=pick(pool),v=rent()*(.15+Math.random()*.2);
+    S.orders.push({k,q:Math.max(2,Math.round(v/(val(k)*2.5))),c:pick(CLIENTS)});
+  }
+}
+const orderPay=o=>o.q*val(o.k)*2.5*mods().price*Math.pow(1.4,pk('traiteur'));
+function rateOf(b,i,a,m){
+  m=m||mods();const d=B[b.type],w=wMult(i);a=a||adjBonus(i);
+  return (d.kind==='ext'?.5*m.ext:d.kind==='craft'?.4*m.craft:m.sell)*b.lvl*msMult(b.lvl)*w*a.sp;
+}
+function flows(){
+  const f={},m=mods();for(const k in ITEMS)f[k]=0;
+  if(pk('pigeon'))RAW.forEach(k=>f[k]+=pk('pigeon')*m.ext);
+  S.plots.forEach((b,i)=>{
+    if(!b)return;const d=B[b.type];if(d.kind==='aura')return;const r=rateOf(b,i,null,m);
+    if(d.kind==='ext')f[d.res]+=r;
+    else if(d.kind==='craft'){f[b.recipe]+=r;for(const j in ITEMS[b.recipe].r)f[j]-=r*ITEMS[b.recipe].r[j]}
+    else f[b.sell]-=r;
+  });
+  return f;
+}
+
+// ====== BOUCLE ======
+function tick(dt){
+  if(S.block||!S.speed)return;
+  dt*=S.speed;S.t-=dt;
+  const m=mods(),e0=S.earned;
+  S.tt+=dt;
+  if(S.tt>=4){S.tt=0;for(const k in ITEMS){S.prev[k]=S.trend[k];const vo=world().vol||1;S.trend[k]=clamp(S.trend[k]+(Math.random()-.5)*.24*vo,1-.4*Math.min(vo,2),1+.6*vo)}}
+  for(const k in ITEMS)S.sat[k]+=(1-S.sat[k])*Math.min(1,.15*dt);
+  if(pk('pigeon'))for(const k of RAW)S.inv[k]+=pk('pigeon')*m.ext*dt;
+  S.plots.forEach((b,i)=>{
+    if(!b)return;
+    const d=B[b.type];
+    if(d.kind==='aura'){b.prog=1;b.st='aura '+pct(1+auraPow(b)*(1+pk('trou')));return}
+    const a=adjBonus(i),r=rateOf(b,i,a,m);
+    if(d.kind==='ext'){S.inv[d.res]+=r*dt;b.prog=(b.prog+r*dt)%1;b.st='+'+fmt(r)+'/s';b.stuck=0;return}
+    b.prog+=r*dt;const n=Math.floor(b.prog);
+    if(n<1)return;
+    let c;
+    if(d.kind==='craft'){c=Math.min(n,maxCraft(b.recipe));if(c>0)doCraft(b.recipe,c);b.stuck=c<n;b.st=c<n?'⚠ manque '+missing(b.recipe):ITEMS[b.recipe].e+' '+fmt(r)+'/s'}
+    else{c=Math.min(n,Math.floor(S.inv[b.sell]));if(c>0)sell(b.sell,c,a.pr);b.stuck=c<n&&c===0;b.st=c<n?'⚠ stock vide':'vend '+ITEMS[b.sell].e+' '+fmt(r)+'/s'}
+    b.prog-=c;if(b.prog>1)b.prog=1;
+  });
+  const al=Math.min(1,dt/4);S.ema+=((S.earned-e0)/dt-S.ema)*al;
+  if(!vipT&&Math.random()<dt/30*(meta.kup.vip?2:1))spawnVip();
+  if(S.t<=0)endDay();
+}
+function missing(k){for(const i in ITEMS[k].r)if(S.inv[i]<ITEMS[k].r[i])return ITEMS[i].e;return ''}
+function spawnVip(){
+  if(!$('base'))return;
+  const v=document.createElement('div');v.id='vip';v.textContent=pick(['🛸','👾','🧛','🦑']);v.dataset.a='vip';v.title='Client pressé : clique vite !';
+  v.style.left=10+Math.random()*75+'%';v.style.top=20+Math.random()*60+'%';
+  $('base').appendChild(v);vipT=setTimeout(killVip,6000);
+}
+function killVip(){clearTimeout(vipT);vipT=null;const v=$('vip');if(v)v.remove()}
+
+function endDay(){
+  S.block=true;killVip();
+  const due=rent()+wages();
+  if(S.money<due&&S.tech.assurance!==1){
+    let g=0;for(const k in ITEMS)g+=sell(k,Infinity,.5);
+    if(g>0)log(`🔥 Vente de panique : +${fmt(g)} ₭ (à moitié prix)`);
+  }
+  if(S.money>=due){
+    S.money-=due;log(`🏠 Jour ${S.day} : loyer payé (${fmt(due)} ₭). Le proprio grogne de satisfaction.`);
+    afterRent(due);
+  }else if(S.tech.assurance===1){
+    S.tech.assurance=2;log('🛟 L\'assurance a payé le loyer à ta place. Elle ne le refera pas.');afterRent(0);
+  }else gameOver(due);
+}
+function afterRent(due){S.lastDue=due;if(!S.won&&S.day>=world().win)showVictory();else showPerks(due)}
+function showVictory(){
+  S.won=true;const id=S.world+'_'+S.heat,first=!meta.wins[id];
+  meta.wins[id]=1;meta.archWins[S.arch]=1;if(first)meta.keys++;checkAch();saveMeta();
+  modal('win',`<h1>🏆 Bail racheté !</h1><p>${world().e} <b>${world().n}</b> 🌶️ ${S.heat} est à toi : le proprio signe en pleurant.</p>
+  <p>${first?'Première victoire ici : <b>+1 🔑</b>'+(S.heat<10?', piment 🌶️ '+(S.heat+1)+' débloqué.':'.'):'Déjà remporté : pas de nouvelle clé.'}${first&&S.heat===0&&WORLDS[S.world+1]?' Nouveau monde : <b>'+WORLDS[S.world+1].n+'</b> !':''}</p>
+  <p>Encaisse maintenant, ou continue en mode infini pour viser plus haut. Dans les deux cas, les Étoiles Noires de la run sont majorées de 50 %.</p>
+  <p><button class="pri" data-a="cashout">💰 Encaisser et partir</button> <button data-a="contWin">♾️ Continuer en mode infini</button></p>`);
+}
+function showPerks(due){
+  S.lastDue=due;
+  const boss=S.event.boss;
+  const ids=shuffle(Object.keys(PERKS).filter(k=>!!PERKS[k].leg===!!boss)).slice(0,3+mu('choix'));
+  const nd=S.day+1;
+  modal('perks',`<h1>${boss?'👹 Proprio repoussé !':'🌙 Jour '+S.day+' survécu !'}</h1>
+  <p>Recette du jour : <b>${fmt(S.earned-S.dayStart)} ₭</b> · payé au proprio : <b>${due?fmt(due)+' ₭':'0 ₭ (merci l\'assurance)'}</b> · reste en caisse : <b>${fmt(S.money)} ₭</b></p>
+  <p>${boss?'Il a laissé tomber quelque chose de <b style="color:var(--gold)">légendaire</b> en partant :':'Choisis un bonus trouvé dans une poubelle spatiale :'}</p>
+  <div class="choices">${ids.map(k=>`<div class="choice ${boss?'leg':''}" data-a="perk" data-x="${k}"><div class="te">${PERKS[k].e}</div><b>${PERKS[k].n}</b><small>${PERKS[k].d}</small>${pk(k)?'<small>déjà ×'+pk(k)+'</small>':''}</div>`).join('')}</div>
+  ${meta.kup.reroll&&!S.rerolled?'<p><button data-a="perkReroll">🎲 Relancer les bonus (1 fois par soir)</button></p>':''}
+  <p>Demain, loyer : <b>${fmt(rentAt(nd))} ₭</b>${isBoss(nd)?' — 👹 <b>le Proprio vient en personne</b> (loyer ×1,5)':''}</p>`);
+}
+function nextDay(){
+  if(pk('interets')){const g=Math.min(S.money*.05*pk('interets'),rentAt(S.day+1)*.5);S.money+=g;log('🏦 Intérêts du Livret Ⱥ : +'+fmt(g)+' ₭')}
+  S.staff.forEach(s=>{if(s.at!=null&&S.plots[s.at])s.xp=Math.min(10,s.xp+1+pk('formation'))});
+  S.day++;S.t=dayLen();S.dayStart=S.earned;S.dm={ext:1,craft:1,price:1,rent:1,wage:1,rep:1};S.rerolled=0;
+  S.event=isBoss(S.day)?BOSS:S.day<3?EVENTS[0]:pick(EVENTS);
+  genCands();genOrders();
+  log(`☀️ Jour ${S.day} — ${S.event.n} : ${S.event.d}`);
+  if(!S.event.boss&&S.day>=3&&Math.random()<.55)showDilemma();else beginDay();
+}
+function showDilemma(){
+  const d=pick(DILEMMAS)();dilFns=d.o.map(o=>o[2]);
+  modal('dilemma',`<h1>${d.t}</h1><p>${d.d}</p><div class="choices">${d.o.map((o,i)=>`<div class="choice ${o[2]?'':'off'}" ${o[2]?`data-a="dil" data-x="${i}"`:''}><b>${o[0]}</b><small>${o[1]}</small></div>`).join('')}</div>`);
+}
+function beginDay(){S.block=false;closeModal();renderAll();saveRun()}
+function runStars(){return Math.floor(Math.pow(S.day,1.3)*(1+.5*S.world)*(1+.25*S.heat)*(1+.1*mu('etoile'))*(S.won?1.5:1))}
+function gameOver(due,cash){
+  const stars=runStars();
+  meta.stars+=stars;meta.best=Math.max(meta.best,S.day);meta.runs++;checkAch();meta.total+=S.earned;saveMeta();clearRun();
+  S.over={due,stars,cash};showOver();
+}
+function checkAch(){let ch=0;for(const a of ACH)if(!meta.ach[a.id]&&a.f()){meta.ach[a.id]=1;meta.stars+=a.r;ch=1;toast(`🏅 Succès : <b>${a.n}</b> — +${a.r} ⭐`)}if(ch)saveMeta()}
+function completion(){
+  const mk=Object.keys(META),p=[
+    mk.reduce((a,k)=>a+mu(k),0)/mk.reduce((a,k)=>a+META[k].max,0),
+    ACH.filter(a=>meta.ach[a.id]).length/ACH.length,
+    nClears()/(WORLDS.length*11),
+    RECIPES.reduce((a,k)=>a+mLvl(k),0)/(RECIPES.length*5),
+    Object.keys(KEYS).filter(k=>meta.kup[k]).length/Object.keys(KEYS).length,
+    Object.keys(ARCH).filter(k=>meta.archWins[k]).length/Object.keys(ARCH).length];
+  return{p,total:p.reduce((a,b)=>a+b,0)/p.length};
+}
+const pctDone=()=>(Math.floor(completion().total*1000)/10).toFixed(1)+' %';
+function showProgress(){
+  const c=completion(),L=['Améliorations ⭐','Succès','Victoires (8 mondes × 11 piments)','Maîtrises de recettes','Héritages 🔑','Enseignes victorieuses'];
+  const h=Math.floor(meta.time/3600),m=Math.floor(meta.time%3600/60);
+  modal('prog',`<h1>📖 Progression — ${pctDone()}</h1>
+  <p>Temps de jeu : <b>${h} h ${m} min</b> · runs : <b>${meta.runs}</b> · record : <b>jour ${meta.best}</b> · ⭐ <b>${meta.stars}</b> · 🔑 <b>${meta.keys}</b></p>
+  ${c.p.map((v,i)=>`<small>${L[i]} — ${Math.floor(v*100)} %</small><div class="bar" style="height:8px;margin:2px 0 8px"><i style="width:${v*100}%"></i></div>`).join('')}
+  <h2>🔑 Héritages <small>1 clé à chaque première victoire (monde × piment)</small></h2><div class="choices">${Object.keys(KEYS).map(k=>{const d=KEYS[k];
+    return meta.kup[k]?`<div class="choice done"><b>${d.n}</b><small>${d.d}</small>✔</div>`:`<div class="choice ${meta.keys<d.c?'off':''}" ${meta.keys<d.c?'':`data-a="kbuy" data-x="${k}"`}><b>${d.n}</b><small>${d.d}</small>🔑 ${d.c}</div>`}).join('')}</div>
+  <h2>🏅 Succès ${ACH.filter(a=>meta.ach[a.id]).length}/${ACH.length}</h2><div class="choices">${ACH.map(a=>`<div class="choice ${meta.ach[a.id]?'done':'off'}" style="cursor:default"><b>${a.n}</b><small>${a.d}</small>${meta.ach[a.id]?'✔':'⭐ '+a.r}</div>`).join('')}</div>
+  <h2>🍳 Maîtrises <small>+3 % de valeur par niveau, cumul sur toutes les runs</small></h2><div class="choices">${RECIPES.map(k=>{const l=mLvl(k),n=meta.made[k]||0;return `<div class="choice ${l>=5?'done':''}" style="cursor:default"><div class="te">${ITEMS[k].e}</div><b>${ITEMS[k].n}</b><small>Niveau ${l}/5</small><small>${fmt(n)}${l<5?' / '+fmt(mThr(k,l)):''} cuisinés</small></div>`}).join('')}</div>
+  <button data-a="progClose">Fermer</button>`);
+}
+function showWorlds(){
+  modal('worlds',`<h1>🚀 Où ouvrir le stand ?</h1><p>Rachète le bail en survivant jusqu'au jour indiqué. Chaque victoire débloque le piment 🌶️ suivant (par niveau : loyer +12 %, salaires +10 %, Étoiles Noires +25 %) et rapporte une 🔑 la première fois.</p>
+  <div class="choices">${WORLDS.map((w,i)=>{
+    if(!worldOpen(i))return `<div class="choice off"><div class="te">🔒</div><b>${w.n}</b><small>Gagne sur « ${WORLDS[i-1].n} » pour débloquer</small></div>`;
+    const mh=maxHeat(i),h=Math.min(meta.sel[i]??mh,mh);
+    return `<div class="choice" style="cursor:default"><div class="te">${w.e}</div><b>${w.n}</b><small>${w.d}</small><small>Loyer ×${w.rent} · objectif : jour ${w.win} · étoiles ×${1+.5*i}</small>
+    <small>✔ ${[...Array(11)].filter((_,x)=>cleared(i,x)).length}/11 piments</small>
+    <div><button data-a="heat" data-x="${i},-1" ${h<=0?'disabled':''}>◀</button> 🌶️ ${h} <button data-a="heat" data-x="${i},1" ${h>=mh?'disabled':''}>▶</button></div>
+    <button class="pri" data-a="world" data-x="${i}" style="margin-top:6px">Jouer</button></div>`}).join('')}</div>
+  <button data-a="restart">Retour</button>`);
+}
+function metaShop(){
+  return `<p>⭐ Étoiles Noires : <b>${meta.stars}</b> — record : jour ${meta.best}</p><div class="choices">${Object.keys(META).map(k=>{
+    const d=META[k],l=mu(k),c=d.c(l),off=l>=d.max||meta.stars<c;
+    return `<div class="choice ${off?'off':''}" ${off?'':`data-a="meta" data-x="${k}"`}><b>${d.n}</b><small>${d.d}</small><small>Niv ${l}/${d.max}</small>${l>=d.max?'MAX':'⭐ '+c}</div>`}).join('')}</div>`;
+}
+function showOver(){
+  modal('over',`<h1>${S.over.cash?'💰 Bail racheté, rideau baissé':'💀 Expulsé dans le vide spatial'}</h1>
+  <p>${S.over.cash?'Tu pars la tête haute au jour '+S.day+'.':`Jour ${S.day} : il te manquait ${fmt(S.over.due-S.money)} ₭. Le proprio a repris l'astéroïde et gardé la friteuse.`}${S.won&&!S.over.cash?' Mais le bail était déjà racheté : la victoire reste acquise.':''}</p>
+  <p>Chiffre d'affaires de la run : <b>${fmt(S.earned)} ₭</b> — Tu gagnes <b>⭐ ${S.over.stars}</b> Étoiles Noires du guide Michelin parallèle.</p>
+  <h2>Améliorations permanentes</h2>${metaShop()}
+  <button class="pri" data-a="restart">🚀 Rouvrir un stand ailleurs</button> <button data-a="progress">📖 Progression (${pctDone()})</button>`);
+}
+function showStart(){
+  const r=loadRun();
+  modal('start',`<h1>🌯 Kebab Cosmique</h1>
+  <p>Tu tiens un stand de kebab sur un astéroïde loué à un proprio galactique radin. Chaque soir, le loyer tombe — et il grimpe chaque jour, de plus en plus vite. Tous les 5 jours, il vient en personne. Tiens jusqu'au jour objectif pour <b>racheter le bail</b> : 8 mondes, 11 niveaux de piment chacun.</p>
+  <p><b>Récolte</b>, <b>cuisine</b>, <b>vends</b> au bon cours, honore les <b>commandes</b>, <b>construis</b> des machines et place-les côte à côte pour créer des <b>synergies</b>, <b>recherche</b> de nouvelles recettes, <b>embauche</b> des aliens douteux. Quand tu ne peux plus payer : expulsion, Étoiles Noires, et on recommence plus fort.</p>
+  <p><kbd>Espace</kbd> pause · <kbd>1</kbd>–<kbd>4</kbd> vitesse · <kbd>L</kbd> Labo · <kbd>Échap</kbd> fermer / annuler</p>
+  ${meta.best?'<h2>Améliorations permanentes</h2>'+metaShop():''}
+  <p>${r?`<button class="pri" data-a="resume">▶ Reprendre la run (jour ${r.day})</button> `:''}<button class="${r?'':'pri'}" data-a="start">🚀 ${r?'Nouvelle run':'Ouvrir le stand'}</button> <button data-a="progress">📖 Progression (${pctDone()})</button></p>`);
+}
+function showArch(){
+  const ids=shuffle(Object.keys(ARCH).filter(k=>ARCH[k].unl==null||cleared(ARCH[k].unl,0))).slice(0,3+mu('choix'));
+  modal('arch',`<h1>🏪 Choisis ton enseigne</h1><p>${WORLDS[selW].e} ${WORLDS[selW].n} · 🌶️ ${selH}. L'enseigne change les règles pour toute la run ; de nouvelles se débloquent en gagnant sur les premiers mondes.</p>
+  <div class="choices">${ids.map(k=>`<div class="choice" data-a="arch" data-x="${k}"><div class="te">${ARCH[k].e}</div><b>${ARCH[k].n}</b><small>${ARCH[k].d}</small></div>`).join('')}</div>`);
+}
+function showLabo(){
+  modal('labo',`<h1>🔬 Labo de recherche</h1><p>Des technologies pour cette run. Caisse : <b id="laboMoney">${fmt(S.money)} ₭</b></p>
+  <div class="choices">${Object.keys(TECH).map(k=>{const t=TECH[k],c=techCost(k);
+    if(S.tech[k])return `<div class="choice done"><div class="te">${t.e}</div><b>${t.n}</b><small>${t.d}</small>✔ ${k==='assurance'&&S.tech[k]===2?'utilisée':'acquis'}</div>`;
+    if(t.req&&!S.tech[t.req])return `<div class="choice off"><div class="te">🔒</div><b>${t.n}</b><small>${t.d}</small><small>Nécessite : ${TECH[t.req].n}</small></div>`;
+    return `<button class="choice" data-a="tech" data-x="${k}" data-cost="${c}"><div class="te">${t.e}</div><b>${t.n}</b><small>${t.d}</small>${fmt(c)} ₭</button>`}).join('')}</div>
+  <button data-a="close">Fermer</button>`);
+}
+
+// ====== RENDU ======
+function modal(kind,html){S.modal=kind;$('mbox').innerHTML=html;$('modal').classList.remove('hidden');$('mbox').scrollTop=0}
+function closeModal(){S.modal=null;$('modal').classList.add('hidden')}
+function recipeHTML(k){const r=ITEMS[k].r;return r?Object.keys(r).map(i=>`<span id="ri_${k}_${i}">${r[i]}${ITEMS[i].e}</span>`).join(' + '):'ressource brute'}
+function recipeTxt(k){const r=ITEMS[k].r;return r?Object.keys(r).map(i=>r[i]+ITEMS[i].e).join(' + '):'ressource brute'}
+function renderItems(){
+  $('items').innerHTML=Object.keys(ITEMS).map(k=>{const it=ITEMS[k],lk=!unlocked(k);
+    return `<div class="row ${lk?'locked':''}"><span class="ico">${it.e}</span><div class="nm" title="${it.n}">${it.n}<small>${lk?'🔒 à breveter au Labo':recipeHTML(k)}</small></div>
+    <div class="qt"><b id="q_${k}"></b><small id="f_${k}"></small></div><span class="pr" id="p_${k}"></span>
+    <div class="btns"><button data-a="make" data-hold data-x="${k}" id="m_${k}" title="${it.r?'Cuisiner':'Récolter'} (maintenir pour répéter, Maj = ×10)">${it.r?'Cuisiner':'Récolter'}</button>
+    ${!it.r&&S.tech.import?`<button data-a="buy" data-hold data-x="${k}" id="b_${k}" title="Acheter au marché (1,5× le cours)">🛒</button>`:''}
+    <button data-a="sell1" data-hold data-x="${k}" id="s_${k}" title="Vendre 1 (Maj = 10)">Vendre</button>
+    <button data-a="sellAll" data-x="${k}" id="sa_${k}" title="Tout vendre">Tout</button></div></div>`}).join('');
+}
+function renderOrders(){
+  $('orders').innerHTML=S.orders.map((o,i)=>`<div class="card order" id="oc_${i}"><div><b>${o.q} × ${ITEMS[o.k].e} ${ITEMS[o.k].n}</b>
+    <small>${o.c} · <span id="oq_${i}"></span></small></div>
+    <button data-a="deliver" data-x="${i}" id="ord_${i}">Livrer (+${fmt(orderPay(o))} ₭)</button></div>`).join('')||'<small style="color:var(--dim)">Toutes les commandes sont livrées. La classe.</small>';
+}
+function renderGrid(){
+  $('grid').className=S.assigning!=null?'assigning':S.moving!=null?'moving':'';
+  $('hint').textContent=S.assigning!=null?'👉 Clique sur un bâtiment pour y affecter '+S.staff[S.assigning].name+' (Échap pour annuler)':
+    S.moving!=null?'↔ Clique sur une autre parcelle pour y déplacer le bâtiment (Échap pour annuler)':'';
+  $('grid').innerHTML=S.plots.map((b,i)=>{
+    if(!b)return `<div class="tile empty" data-a="build" data-x="${i}"><div><b>＋</b>Construire</div></div>`;
+    const d=B[b.type],w=workerOf(i),a=adjBonus(i),syn=d.kind==='sell'?a.pr:a.sp,nm=nextMs(b.lvl);
+    const e=d.kind==='craft'?d.e+ITEMS[b.recipe].e:d.kind==='sell'?d.e+ITEMS[b.sell].e:d.e;
+    return `<div class="tile ${S.moving===i?'sel':''}" id="tile_${i}" data-a="open" data-x="${i}" draggable="true" data-drag="p${i}" title="${d.n} — ${KIND_TXT[d.kind]}${w?'\n👽 '+w.name+' ×'+empMult(w,d.kind).toFixed(2):''}${nm&&d.kind!=='aura'?'\nProchain palier ×2 : niveau '+nm:''}">
+    <div class="te">${e}</div><div class="tn">${d.n}</div>
+    <div class="tl">Niv ${b.lvl}${w?' · 👽':''}${syn>1.001?` · <span class="syn">🔗${pct(syn)}</span>`:''}</div><div class="bar"><i id="pb_${i}"></i></div><small id="ts_${i}"></small>
+    <button class="upb" data-a="quickUp" data-x="${i}" data-cost="${upCost(b)}" title="Améliorer au niveau ${b.lvl+1}">⬆ ${fmt(upCost(b))} ₭${nm===b.lvl+1&&d.kind!=='aura'?' ×2!':''}</button></div>`}).join('');
+  const max=S.plots.length>=maxPlots();
+  $('plotBtn').textContent=max?'Astéroïde plein':'+ Parcelle ('+fmt(plotCost())+' ₭)';
+  $('plotBtn').dataset.cost=max?Infinity:plotCost();
+  flowCache=flows();
+}
+function staffChips(s){
+  return `<span class="chip" title="Efficacité de base">${s.trait} ×${s.mult}</span>${s.spec?`<span class="chip" title="×1,4 sur les bâtiments de ce type">${SPEC[s.spec]}</span>`:''}${s.xp?`<span class="chip" title="+8 % par jour d'ancienneté (max 10)">⭐${s.xp}</span>`:''}`;
+}
+function renderStaff(){
+  $('staffN').textContent=S.staff.length+'/'+staffMax();
+  $('staff').innerHTML=S.staff.map((s,i)=>{const b=s.at!=null&&S.plots[s.at];
+    return `<div class="card" draggable="true" data-drag="s${i}" title="Glisse-moi sur un bâtiment"><div><b>${s.name}</b> ${staffChips(s)}
+    <small>${fmt(s.wage)} ₭/jour · ${b?'📍 '+B[b.type].n+' → ×'+empMult(s,B[b.type].kind).toFixed(2):'<span class="warn">non affecté — glisse-le sur un bâtiment</span>'}</small></div>
+    <div style="white-space:nowrap"><button data-a="assign" data-x="${i}" class="${S.assigning===i?'on':''}">Affecter</button> <button data-a="fire" data-x="${i}" title="Virer">✖</button></div></div>`}).join('')||'<small style="color:var(--dim)">Personne. Tu fais tout toi-même.</small>';
+  const full=S.staff.length>=staffMax();
+  $('cands').innerHTML=S.cands.map((s,i)=>`<div class="card"><div><b>${s.name}</b> ${staffChips(s)}<small>${fmt(s.wage)} ₭/jour</small></div>
+    <button data-a="hire" data-x="${i}" data-cost="${full?Infinity:s.wage*2}">${full?'Équipe pleine':'Embaucher ('+fmt(s.wage*2)+' ₭)'}</button></div>`).join('')||'<small style="color:var(--dim)">Plus personne ne veut bosser ici aujourd\'hui.</small>';
+  const rc=10*Math.pow(1.3,S.day-1);$('rerollBtn').textContent='🎲 Autres candidats ('+fmt(rc)+' ₭)';$('rerollBtn').dataset.cost=rc;
+}
+function renderPerks(){
+  const a=arch();
+  $('perks').innerHTML=`<span class="chip" title="${a.d}">${a.e} ${a.n}</span>`+Object.keys(S.perks).map(k=>`<span class="chip ${PERKS[k].leg?'leg':''}" title="${PERKS[k].d}">${PERKS[k].e} ${PERKS[k].n}${S.perks[k]>1?' ×'+S.perks[k]:''}</span>`).join('')+
+    Object.keys(S.tech).map(k=>`<span class="chip" title="${TECH[k].d}">${TECH[k].e} ${TECH[k].n.replace('Brevet : ','')}</span>`).join('');
+}
+function renderSpeeds(){
+  $('speeds').innerHTML=[[0,'⏸'],[.5,'½×'],[1,'1×'],[2,'2×'],[4,'4×']].map(([v,l])=>`<button data-a="speed" data-x="${v}" class="${S.speed===v?'on':''}" title="${v?'Vitesse '+l:'Pause (Espace)'}">${l}</button>`).join(' ');
+}
+function renderAll(){renderItems();renderGrid();renderStaff();renderPerks();renderSpeeds();renderOrders();
+  $('event').innerHTML=`${world().e} ${world().n} · 🌶️ ${S.heat} · ${S.won?'bail racheté ♾️':'objectif : jour '+world().win} &nbsp;|&nbsp; 📡 <b>${S.event.n}</b> — ${S.event.d}`;$('log').innerHTML=S.log.map(l=>`<div>${l}</div>`).join('');update()}
+function checkTuto(){
+  if(S.tuto>=TUTO.length){if($('tuto').textContent)$('tuto').textContent='';return}
+  if(TUTO[S.tuto][1]()){
+    const g=25*(S.tuto+1);S.money+=g;S.tuto++;toast('🎯 Objectif accompli : +'+g+' ₭');
+    if(S.tuto>=TUTO.length){meta.tuto=1;saveMeta();toast('🎓 Tutoriel terminé. Bonne chance face au proprio !')}
+  }
+  if(S.tuto<TUTO.length){const t=`🎯 Objectif ${S.tuto+1}/${TUTO.length} : ${TUTO[S.tuto][0]} — récompense ${25*(S.tuto+1)} ₭`;if($('tuto').textContent!==t)$('tuto').textContent=t}
+}
+function update(){
+  frame++;
+  const due=rent()+wages(),proj=S.money+S.ema*Math.max(0,S.t);
+  $('money').textContent=fmt(S.money)+' ₭';
+  $('income').textContent='≈ +'+fmt(S.ema)+' ₭/s';
+  $('day').textContent=S.day+(S.won?'':' / '+world().win)+(isBoss(S.day)?' 👹':'');
+  const rb=$('rentbar');rb.className='pbar '+(S.money>=due?'ok':proj>=due?'':'bad');
+  rb.firstElementChild.style.width=clamp(S.money/due*100,0,100)+'%';
+  rb.lastElementChild.textContent=fmt(Math.min(S.money,due))+' / '+fmt(due)+' ₭';
+  $('dueTxt').textContent=S.money>=due?'✔ de quoi payer':proj>=due?'— ça devrait passer':'— il manquera ≈ '+fmt(due-proj)+' ₭';
+  $('dueTxt').className=S.money>=due?'up':proj>=due?'warn':'down';
+  $('rep').textContent='×'+fmt(mods().rep);
+  $('timer').firstElementChild.style.width=clamp(S.t/dayLen()*100,0,100)+'%';
+  $('timer').lastElementChild.textContent=S.speed?Math.ceil(Math.max(0,S.t))+' s':'⏸ PAUSE';
+  if(frame%5===0)flowCache=flows();
+  const cp=mods().click;
+  for(const k in ITEMS){
+    const q=Math.floor(S.inv[k]),lk=!unlocked(k);
+    $('q_'+k).textContent=fmt(q);
+    const fl=flowCache[k]||0,fe=$('f_'+k);
+    fe.textContent=Math.abs(fl)<.005?'':(fl>0?'+':'−')+fmt(Math.abs(fl))+'/s';fe.className=fl>0?'up':'down';
+    const p=$('p_'+k),t=S.trend[k]*Math.min(1,S.sat[k]);
+    p.textContent=fmt(price(k))+' ₭ '+(t>1.05?'▲':t<.95?'▼':'•');p.className='pr '+(t>1.05?'up':t<.95?'down':'');
+    p.title='Tendance '+pct(S.trend[k])+' · saturation '+pct(Math.min(1,S.sat[k]));
+    $('m_'+k).disabled=lk||(ITEMS[k].r?maxCraft(k)<1:false);
+    $('s_'+k).disabled=$('sa_'+k).disabled=q<1;
+    const bb=$('b_'+k);if(bb){bb.disabled=S.money<buyPrice(k);bb.title='Acheter '+fmt(cp)+' pour '+fmt(buyPrice(k)*cp)+' ₭ (Maj = ×10)'}
+    if(ITEMS[k].r&&!lk)for(const i in ITEMS[k].r){const el=$('ri_'+k+'_'+i);if(el)el.className=S.inv[i]<ITEMS[k].r[i]?'down':''}
+  }
+  S.orders.forEach((o,i)=>{const b=$('ord_'+i);if(!b)return;const q=Math.floor(S.inv[o.k]);b.disabled=q<o.q;b.className=q>=o.q?'pri':'';$('oc_'+i).className='card order'+(q>=o.q?' ready':'');$('oq_'+i).textContent=Math.min(q,o.q)+'/'+o.q+' en stock'});
+  S.plots.forEach((b,i)=>{if(!b)return;const pb=$('pb_'+i);if(pb){pb.style.width=clamp(b.prog*100,0,100)+'%';const ts=$('ts_'+i);ts.textContent=b.st||'';ts.className=b.stuck?'down':'';$('tile_'+i).classList.toggle('stuck',!!b.stuck)}});
+  document.querySelectorAll('[data-cost]').forEach(b=>b.disabled=S.money<+b.dataset.cost);
+  const nt=Object.keys(TECH).filter(k=>!S.tech[k]&&(!TECH[k].req||S.tech[TECH[k].req])&&S.money>=techCost(k)).length;
+  $('laboBtn').textContent='🔬 Labo'+(nt?' ('+nt+')':'');$('laboBtn').className=nt?'glow':'';
+  if($('laboMoney'))$('laboMoney').textContent=fmt(S.money)+' ₭';
+  if(!S.block)checkTuto();
+}
+function showBuilding(i){
+  const b=S.plots[i],d=B[b.type],a=adjBonus(i),nm=nextMs(b.lvl);
+  let cfg='';
+  if(d.kind==='craft')cfg=`<h2>Recette à cuisiner en boucle</h2><div class="choices">${RECIPES.filter(unlocked).map(k=>`<div class="choice ${b.recipe===k?'cur':''}" data-a="setRecipe" data-x="${k}"><div class="te">${ITEMS[k].e}</div><b>${ITEMS[k].n}</b><small>${recipeTxt(k)}</small></div>`).join('')}</div>`;
+  if(d.kind==='sell')cfg=`<h2>Produit à vendre automatiquement</h2><div class="choices">${Object.keys(ITEMS).filter(unlocked).map(k=>`<div class="choice ${b.sell===k?'cur':''}" data-a="setSell" data-x="${k}"><div class="te">${ITEMS[k].e}</div><b>${ITEMS[k].n}</b><small>${fmt(price(k))} ₭</small></div>`).join('')}</div>`;
+  S.cur=i;
+  const w=workerOf(i);
+  const info=d.kind==='aura'?`Aura : <b>${pct(1+auraPow(b)*(1+pk('trou')))}</b> de vitesse sur les voisins`:
+    `Cadence : <b>${fmt(rateOf(b,i,a))}/s</b>${w?' · 👽 '+w.name+' ×'+empMult(w,d.kind).toFixed(2):' · aucun employé'}${a.sp>1.001?' · synergie vitesse <b>'+pct(a.sp)+'</b>':''}${a.pr>1.001?' · synergie prix <b>'+pct(a.pr)+'</b>':''}${msMult(b.lvl)>1?' · paliers <b>×'+msMult(b.lvl)+'</b>':''}`;
+  modal('bld',`<h1>${d.e} ${d.n} — Niv ${b.lvl}</h1><p>${info}</p><p>${KIND_TXT[d.kind]}${nm&&d.kind!=='aura'?' Prochain palier <b>×2</b> au niveau '+nm+'.':''}</p>${cfg}
+  <p><button class="pri" data-a="upgrade" data-cost="${upCost(b)}">⬆ Améliorer (${fmt(upCost(b))} ₭)</button>
+  <button data-a="upMax" data-cost="${upCost(b)}">⬆⬆ Max</button>
+  <button data-a="move">↔ Déplacer</button>
+  <button data-a="demolish" title="Rembourse la moitié du prix de base">💥 Démolir (+${fmt(d.cost/2)} ₭)</button> <button data-a="close">Fermer</button></p>`);
+}
+function float(e,t){
+  if(!e||e.clientX==null)return;
+  const f=document.createElement('div');f.className='float';f.textContent=t;
+  f.style.left=e.clientX-10+(Math.random()*16-8)+'px';f.style.top=e.clientY-24+'px';document.body.appendChild(f);setTimeout(()=>f.remove(),700);
+}
+function swapPlots(a,b){
+  [S.plots[a],S.plots[b]]=[S.plots[b],S.plots[a]];
+  S.staff.forEach(s=>{if(s.at===a)s.at=b;else if(s.at===b)s.at=a});
+}
+function assignTo(si,i){if(!S.plots[i]||!S.staff[si])return;S.staff.forEach(s=>{if(s.at===i)s.at=null});S.staff[si].at=i}
+const x10=e=>e&&e.shiftKey?10:1;
+
+// ====== ACTIONS ======
+const A={
+  make(k,e){if(!unlocked(k))return;const n=mods().click*x10(e);if(ITEMS[k].r){const c=Math.min(n,maxCraft(k));if(c>0){doCraft(k,c);float(e,'+'+fmt(c)+ITEMS[k].e)}}else{S.inv[k]+=n;float(e,'+'+fmt(n)+ITEMS[k].e)}},
+  buy(k,e){const p=buyPrice(k),n=Math.min(mods().click*x10(e),Math.floor(S.money/p));if(n<=0)return;S.money-=n*p;S.inv[k]+=n;S.sat[k]=Math.min(1.6,S.sat[k]+n*.012/mods().rep);float(e,'+'+fmt(n)+ITEMS[k].e)},
+  sell1(k,e){const g=sell(k,x10(e));if(g)float(e,'+'+fmt(g)+' ₭')},
+  sellAll(k,e){const g=sell(k,Infinity);if(g)float(e,'+'+fmt(g)+' ₭')},
+  deliver(i,e){const o=S.orders[i];if(!o||S.inv[o.k]<o.q)return;const g=orderPay(o);S.inv[o.k]-=o.q;S.money+=g;S.earned+=g;S.repB+=.05;meta.orders++;
+    S.orders.splice(i,1);renderOrders();float(e,'+'+fmt(g)+' ₭');log(`📦 Commande livrée à « ${o.c} » : +${fmt(g)} ₭, réputation +5 %.`)},
+  speed(v){S.speed=+v;if(S.speed)S.prevSpeed=S.speed;renderSpeeds()},
+  labo(){if(S.block)return;S.modal==='labo'?closeModal():showLabo()},
+  tech(k){const c=techCost(k);if(S.money<c||S.tech[k])return;S.money-=c;S.tech[k]=1;S.nTech=(S.nTech||0)+1;toast(`🔬 ${TECH[k].e} ${TECH[k].n} : ${TECH[k].d}`);log('🔬 Recherche : '+TECH[k].n);renderItems();renderPerks();showLabo()},
+  build(i){
+    i=+i;
+    if(S.assigning!=null)return;
+    if(S.moving!=null){swapPlots(S.moving,i);S.moving=null;renderGrid();renderStaff();return}
+    S.cur=i;
+    modal('build',`<h1>🏗️ Construire</h1><p>L'emplacement compte : les voisins (haut, bas, gauche, droite) se donnent des bonus.</p><div class="choices">${Object.keys(B).map(t=>`<button class="choice" data-a="doBuild" data-x="${t}" data-cost="${buildCost(t)}"><div class="te">${B[t].e}</div><b>${B[t].n}</b><small>${B[t].kind==='ext'?'Produit '+ITEMS[B[t].res].n:B[t].kind==='craft'?'Cuisine une recette en boucle':B[t].kind==='sell'?'Vend un produit tout seul':'Booste ses voisins'}</small><small>${KIND_TXT[B[t].kind]}</small>${fmt(buildCost(t))} ₭</button>`).join('')}</div><button data-a="close">Annuler</button>`);
+  },
+  doBuild(t){const c=buildCost(t);if(S.money<c)return;S.money-=c;S.plots[S.cur]={type:t,lvl:1,prog:0,recipe:'viande',sell:'kebab',st:''};renderGrid();log(`🏗️ ${B[t].n} construit. Ça sent déjà le graillon.`);
+    B[t].kind==='craft'||B[t].kind==='sell'?showBuilding(S.cur):closeModal()},
+  open(i){
+    i=+i;
+    if(S.assigning!=null){assignTo(S.assigning,i);S.assigning=null;renderGrid();renderStaff();return}
+    if(S.moving!=null){if(S.moving!==i)swapPlots(S.moving,i);S.moving=null;renderGrid();renderStaff();return}
+    showBuilding(i);
+  },
+  quickUp(i,e){const b=S.plots[i],c=upCost(b);if(S.money<c)return;S.money-=c;b.lvl++;float(e,'Niv '+b.lvl);renderGrid()},
+  upgrade(){const b=S.plots[S.cur],c=upCost(b);if(S.money<c)return;S.money-=c;b.lvl++;renderGrid();showBuilding(S.cur)},
+  upMax(){const b=S.plots[S.cur];while(S.money>=upCost(b)){S.money-=upCost(b);b.lvl++}renderGrid();showBuilding(S.cur)},
+  move(){S.moving=S.cur;S.assigning=null;closeModal();renderGrid();renderStaff()},
+  demolish(){S.money+=B[S.plots[S.cur].type].cost/2;S.staff.forEach(s=>{if(s.at===S.cur)s.at=null});S.plots[S.cur]=null;closeModal();renderGrid();renderStaff()},
+  setRecipe(k){S.plots[S.cur].recipe=k;S.plots[S.cur].prog=0;renderGrid();showBuilding(S.cur)},
+  setSell(k){S.plots[S.cur].sell=k;renderGrid();showBuilding(S.cur)},
+  close(){closeModal()},
+  plot(){const c=plotCost();if(S.money<c||S.plots.length>=maxPlots())return;S.money-=c;S.bought++;S.plots.push(null);renderGrid()},
+  hire(i){const s=S.cands[i];if(S.staff.length>=staffMax()||S.money<s.wage*2)return;S.money-=s.wage*2;S.hired=1;S.staff.push(s);S.cands.splice(i,1);renderStaff();log(`🤝 ${s.name} (${s.trait}) rejoint l'équipe. Glisse sa carte sur un bâtiment.`)},
+  fire(i){i=+i;const s=S.staff.splice(i,1)[0];S.assigning=null;renderStaff();renderGrid();log(`👋 ${s.name} est renvoyé par le sas.`)},
+  assign(i){i=+i;S.moving=null;S.assigning=S.assigning===i?null:i;renderStaff();renderGrid()},
+  reroll(){const c=10*Math.pow(1.3,S.day-1);if(S.money<c)return;S.money-=c;genCands();renderStaff()},
+  perk(k){S.perks[k]=pk(k)+1;if(PERKS[k].now)PERKS[k].now();log(`✨ Bonus : ${PERKS[k].n}`);nextDay()},
+  dil(i){const f=dilFns[i];if(!f)return;f();dilFns=[];beginDay()},
+  vip(x,e){const g=Math.max(15,rent()*.2)*(meta.kup.vip?2:1)*Math.pow(2,pk('pourboire'));meta.vip++;S.money+=g;S.earned+=g;killVip();float(e,'+'+fmt(g)+' ₭');log(`🛸 Client pressé : il paie ${fmt(g)} ₭ sans regarder la carte.`)},
+  meta(k){const c=META[k].c(mu(k));if(meta.stars<c||mu(k)>=META[k].max)return;meta.stars-=c;meta.up[k]=mu(k)+1;saveMeta();S.modal==='over'?showOver():showStart()},
+  start(){showWorlds()},
+  heat(x){const [w,d]=x.split(',').map(Number);meta.sel[w]=clamp((meta.sel[w]??maxHeat(w))+d,0,maxHeat(w));showWorlds()},
+  world(w){selW=+w;selH=Math.min(meta.sel[w]??maxHeat(selW),maxHeat(selW));showArch()},
+  progress(){if(S.block&&!['start','over','worlds'].includes(S.modal))return;if(S.modal==='prog')return A.progClose();progBack=S.modal;showProgress()},
+  progClose(){progBack==='start'?showStart():progBack==='over'?showOver():progBack==='worlds'?showWorlds():closeModal()},
+  kbuy(k){if(meta.kup[k]||meta.keys<KEYS[k].c)return;meta.keys-=KEYS[k].c;meta.kup[k]=1;saveMeta();showProgress()},
+  contWin(){showPerks(S.lastDue)},
+  cashout(){gameOver(0,true)},
+  perkReroll(){S.rerolled=1;showPerks(S.lastDue)},
+  arch(k){clearRun();newRun(k,selW,selH);S.block=false;closeModal();renderAll();toast(`${ARCH[k].e} ${ARCH[k].n} — ${ARCH[k].d}`)},
+  resume(){const r=loadRun();if(!r)return showWorlds();S=r;S.block=false;S.assigning=S.moving=null;closeModal();renderAll()},
+  restart(){newRun();renderAll();showStart()}
+};
+document.addEventListener('click',e=>{
+  if(e.target.id==='modal'&&['bld','build','labo'].includes(S.modal)){closeModal();return}
+  if(e.target.id==='modal'&&S.modal==='prog'){A.progClose();return}
+  const el=e.target.closest('[data-a]');if(!el||el.disabled)return;
+  A[el.dataset.a](el.dataset.x,e);update();
+});
+// maintenir un bouton = répéter
+let holdT=null,holdI=null;
+function stopHold(){clearTimeout(holdT);clearInterval(holdI);holdT=holdI=null}
+document.addEventListener('pointerdown',e=>{
+  const el=e.target.closest('[data-hold]');stopHold();if(!el)return;
+  holdT=setTimeout(()=>{holdI=setInterval(()=>{if(el.disabled||!el.isConnected||S.block)return stopHold();A[el.dataset.a](el.dataset.x,e);update()},110)},320);
+});
+['pointerup','pointercancel','blur'].forEach(t=>window.addEventListener(t,stopHold));
+document.addEventListener('pointerout',e=>{if(holdT&&e.target.closest&&e.target.closest('[data-hold]'))stopHold()});
+// glisser-déposer : bâtiments et employés
+document.addEventListener('dragstart',e=>{const t=e.target.closest&&e.target.closest('[data-drag]');if(!t)return;e.dataTransfer.setData('text/plain',t.dataset.drag);e.dataTransfer.effectAllowed='move'});
+document.addEventListener('dragover',e=>{if(e.target.closest&&e.target.closest('.tile'))e.preventDefault()});
+document.addEventListener('drop',e=>{
+  const t=e.target.closest&&e.target.closest('.tile');if(!t)return;e.preventDefault();
+  const d=e.dataTransfer.getData('text/plain'),i=+t.dataset.x;
+  if(d[0]==='p'){const a=+d.slice(1);if(a!==i)swapPlots(a,i)}else if(d[0]==='s')assignTo(+d.slice(1),i);
+  S.assigning=S.moving=null;renderGrid();renderStaff();
+});
+document.addEventListener('keydown',e=>{
+  if(e.code==='Escape'&&['bld','build','labo'].includes(S.modal)){closeModal();return}
+  if(S.block)return;
+  if(e.code==='Space'){e.preventDefault();S.speed=S.speed?0:S.prevSpeed||1;renderSpeeds()}
+  const sp={Digit1:.5,Digit2:1,Digit3:2,Digit4:4,Numpad1:.5,Numpad2:1,Numpad3:2,Numpad4:4}[e.code];
+  if(sp)A.speed(sp);
+  if(e.code==='KeyL')A.labo();
+  if(e.code==='Escape'){S.assigning=S.moving=null;renderGrid();renderStaff()}
+});
+
+// ====== GO ======
+newRun();renderAll();showStart();
+let last=performance.now();
+setInterval(()=>{const now=performance.now(),dt=Math.min(.5,(now-last)/1000);last=now;if(!S.block){meta.time+=dt;if(frame%10===0)checkAch()}tick(dt);update()},100);
+setInterval(()=>{saveRun();saveMeta()},5000);
+</script>
+</body>
+</html>
