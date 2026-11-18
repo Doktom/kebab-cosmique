@@ -5,107 +5,157 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Kebab Cosmique</title>
 <style>
-:root{--bg:#0d0b1e;--panel:#191536;--panel2:#231d4a;--line:#3a3170;--txt:#ece8ff;--dim:#9a92c9;--acc:#ff9d2e;--acc2:#b56bff;--ok:#5be38a;--bad:#ff5d73;--gold:#ffd84a}
+:root{--bg:#0b0919;--panel:#17132f;--panel2:#211b45;--panel3:#2a2358;--line:#342c66;--txt:#ece8ff;--dim:#9a92c9;--acc:#ff9d2e;--acc2:#b56bff;--ok:#5be38a;--bad:#ff5d73;--gold:#ffd84a}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(circle at 20% 0%,#2a1b5c 0,var(--bg) 55%) fixed;color:var(--txt);font:14px/1.35 system-ui,Segoe UI,sans-serif;min-height:100vh}
-h1,h2{margin:0}h2{font-size:13px;letter-spacing:.5px;text-transform:uppercase;color:var(--dim);margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-h2 small{text-transform:none;letter-spacing:0;font-weight:400;text-align:right}
-button{font:inherit;color:var(--txt);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:4px 9px;cursor:pointer;transition:.1s;touch-action:manipulation}
-button:hover:not(:disabled){border-color:var(--acc);transform:translateY(-1px)}
+body{margin:0;background:radial-gradient(ellipse at 15% -10%,#2f1d66 0,transparent 55%),radial-gradient(ellipse at 100% 110%,#3a1640 0,transparent 50%),var(--bg) fixed;color:var(--txt);font:14px/1.35 system-ui,Segoe UI,sans-serif;min-height:100vh}
+h1,h2{margin:0}h2{font-size:12px;letter-spacing:.8px;text-transform:uppercase;color:var(--dim);margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700}
+h2 small{text-transform:none;letter-spacing:0;font-weight:400;text-align:right;font-size:11px}
+button{font:inherit;color:var(--txt);background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:4px 9px;cursor:pointer;transition:background .12s,border-color .12s,transform .08s;touch-action:manipulation}
+button:hover:not(:disabled){border-color:var(--acc);background:var(--panel3)}
 button:active:not(:disabled){transform:scale(.95)}
-button:disabled{opacity:.35;cursor:not-allowed}
+button:disabled{opacity:.3;cursor:not-allowed}
 button.pri{background:var(--acc);color:#221;border-color:var(--acc);font-weight:700}
+button.pri:hover:not(:disabled){background:#ffb357}
 button.on{background:var(--acc2);border-color:var(--acc2)}
 button.glow{border-color:var(--gold);box-shadow:0 0 10px #ffd84a66}
-header{position:sticky;top:0;z-index:5;background:#120f2af2;border-bottom:1px solid var(--line);padding:8px 14px;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;backdrop-filter:blur(6px)}
-header .logo{font-weight:800;font-size:18px;color:var(--acc)}
-.stat{display:flex;flex-direction:column;gap:1px}.stat small{color:var(--dim);font-size:11px}.stat>b{font-size:17px}
-.stat.grow{flex:1;min-width:150px}
-.pbar{position:relative;height:18px;background:var(--panel2);border-radius:9px;overflow:hidden;border:1px solid var(--line)}
-.pbar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--acc2),var(--acc));width:0;transition:width .15s linear}
-.pbar span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;text-shadow:0 1px 2px #000}
-.pbar.ok i{background:linear-gradient(90deg,#2c9d5a,var(--ok))}.pbar.bad i{background:linear-gradient(90deg,#a32a45,var(--bad))}
-#event,#tuto{width:100%;font-size:12px;color:var(--dim)}#event b{color:var(--acc)}
-#tuto{background:#2a2160;border:1px solid var(--acc2);border-radius:8px;padding:5px 10px;color:var(--txt)}#tuto:empty{display:none}
-main{display:grid;grid-template-columns:minmax(340px,1.15fr) minmax(340px,1.3fr) minmax(260px,.9fr);gap:12px;padding:12px;align-items:start}
+button.danger{border-color:var(--bad);color:var(--bad)}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}::-webkit-scrollbar-track{background:transparent}
+*{scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+/* --- en-tête --- */
+header{position:sticky;top:0;z-index:5;background:#0f0c24ee;border-bottom:1px solid var(--line);padding:8px 14px;display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;backdrop-filter:blur(8px)}
+header .logo{font-weight:800;font-size:19px;color:var(--acc);margin-right:6px;white-space:nowrap}
+.hs{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:5px 12px;min-height:48px}
+.hs .lbl{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.6px;display:block}
+.hs .big{font-size:19px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.hs .sub{font-size:11px;color:var(--dim);white-space:nowrap}
+#moneyBox .big{color:var(--gold)}
+.clock{--p:1;width:38px;height:38px;flex:none;border-radius:50%;background:conic-gradient(var(--acc) calc(var(--p)*360deg),#2a2356 0);display:grid;place-items:center;position:relative}
+.clock::before{content:'';position:absolute;inset:4px;border-radius:50%;background:var(--panel)}
+.clock span{position:relative;font-size:11px;font-weight:800;font-variant-numeric:tabular-nums}
+.clock.low{background:conic-gradient(var(--bad) calc(var(--p)*360deg),#2a2356 0)}
+#rentBox.ok{border-color:#2c9d5a;background:linear-gradient(90deg,#173a2a,var(--panel))}
+#rentBox.warn{border-color:#a8701f;background:linear-gradient(90deg,#3a2a14,var(--panel))}
+#rentBox.bad{border-color:var(--bad);background:linear-gradient(90deg,#46182a,var(--panel));animation:alarm 1.6s ease-in-out infinite}
+@keyframes alarm{50%{box-shadow:0 0 14px #ff5d7366}}
+#rentIco{font-size:22px}
+.hgap{flex:1}
+#speeds{display:flex;gap:3px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:3px}
+#speeds button{border:none;background:none;padding:4px 9px;border-radius:7px}
+#speeds button.on{background:var(--acc2)}
+.hbtn{min-height:40px;padding:4px 12px}
+#infobar{width:100%;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--dim)}
+#event b{color:var(--acc)}
+#tuto{background:#2a2160;border:1px solid var(--acc2);border-radius:8px;padding:3px 10px;color:var(--txt)}#tuto:empty{display:none}
+/* --- disposition --- */
+main{display:grid;grid-template-columns:minmax(430px,1.2fr) minmax(400px,1.35fr) minmax(280px,.8fr);gap:12px;padding:12px;align-items:start}
+@media(min-width:1150px) and (min-height:620px){
+  body{height:100vh;overflow:hidden;display:flex;flex-direction:column}
+  main{flex:1;min-height:0;align-items:stretch}
+  main>section{overflow:auto;min-height:0}
+}
 @media(max-width:1150px){main{grid-template-columns:1fr 1fr}#side{grid-column:1/-1;columns:2;column-gap:16px}#side>*{break-inside:avoid}}
-@media(max-width:760px){main{grid-template-columns:1fr}#base{order:-1}#side{columns:1}}
-section{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;position:relative}
-.row{display:grid;grid-template-columns:26px minmax(0,1fr) 52px 62px auto;gap:5px;align-items:center;padding:4px 0;border-bottom:1px dashed #2c2558}
-.row.locked{opacity:.4}
-.row .ico{font-size:20px}.row .nm{overflow:hidden;line-height:1.2}.row .nm small{display:block;color:var(--dim);font-size:11px}
-.row .qt{text-align:right}.row .qt small{display:block;font-size:10px;color:var(--dim)}
-.row .pr{text-align:right;font-size:12px}
-.row .btns{display:flex;gap:4px}.row .btns button{padding:4px 7px}
+@media(max-width:760px){main{grid-template-columns:1fr}#base{order:-1}#side{columns:1}.hgap{display:none}}
+section{background:#17132fe6;border:1px solid var(--line);border-radius:14px;padding:12px;position:relative}
+/* --- marché --- */
+.grp{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.8px;margin:10px 0 2px;padding-left:2px}
+.row{display:grid;grid-template-columns:28px minmax(0,1fr) 54px 58px auto;gap:6px;align-items:center;padding:4px 6px;border-radius:8px;margin:0 -6px}
+.row:hover{background:#ffffff08}
+.row .ico{font-size:21px;text-align:center}.row .nm{overflow:hidden;line-height:1.2}.row .nm small{display:block;color:var(--dim);font-size:11px}
+.row .qt{text-align:right;font-variant-numeric:tabular-nums}.row .qt b{font-size:15px}.row .qt small{display:block;font-size:10px;color:var(--dim)}
+.row .pr{text-align:right;font-size:12px;font-variant-numeric:tabular-nums}
+.row .btns{display:flex;gap:3px}.row .btns button{padding:4px 7px;font-size:13px}
+.row .btns .mk{min-width:84px}
+.card button{white-space:nowrap}
+.lockrow{display:block;width:100%;text-align:left;margin-top:8px;color:var(--dim);background:none;border-style:dashed}
+.lockrow .row{opacity:.5}
 .up{color:var(--ok)!important}.down{color:var(--bad)!important}.warn{color:var(--acc)!important}
-#grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.tile{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:6px 4px;text-align:center;cursor:pointer;min-height:132px;user-select:none;min-width:0;display:flex;flex-direction:column;align-items:stretch}
-.tile:hover{border-color:var(--acc)}
-.tile.empty{align-items:center;justify-content:center;color:var(--line);border-style:dashed;background:none;font-size:11px}
+/* --- astéroïde --- */
+#grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tile{background:linear-gradient(180deg,var(--panel3),var(--panel2));border:1px solid var(--line);border-radius:12px;padding:8px 6px 6px;text-align:center;cursor:pointer;min-height:124px;user-select:none;min-width:0;display:flex;flex-direction:column;align-items:stretch;position:relative;transition:border-color .15s,box-shadow .15s,transform .1s}
+.tile:hover{border-color:var(--acc);transform:translateY(-1px)}
+.tile.empty{align-items:center;justify-content:center;color:var(--line);border-style:dashed;background:#ffffff04;font-size:11px}
 .tile.empty b{font-size:26px;display:block;font-weight:400}
 .tile.empty:hover{color:var(--acc)}
 .assigning .tile:not(.empty),.moving .tile{border-color:var(--acc2);box-shadow:0 0 10px var(--acc2)}
 .tile.sel{border-color:var(--acc);box-shadow:0 0 12px var(--acc)}
-.tile.stuck{border-color:#7a3140}
-.te{font-size:24px}.tn{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tl{font-size:11px;color:var(--dim)}
+.tile.drop{outline:2px dashed var(--acc);outline-offset:2px}
+.tile.stuck{border-color:#b2405a;background:linear-gradient(180deg,#3a1b3c,var(--panel2))}
+.tile .te{font-size:30px;line-height:1.15;margin-top:4px}
+.tile.act .te{animation:work 1.4s ease-in-out infinite}
+@keyframes work{50%{transform:translateY(-2px) scale(1.07)}}
+.tile .lv{position:absolute;top:5px;left:6px;font-size:10px;font-weight:700;background:#0007;border-radius:6px;padding:1px 6px}
+.tile .lv.ms{color:var(--gold)}
+.tile .wk{position:absolute;top:4px;right:6px;font-size:14px}
+.tn{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.tl{font-size:11px;color:var(--dim);min-height:15px}
 .tl .syn{color:var(--ok)}
-.bar{height:5px;background:#120f2a;border-radius:3px;margin:3px 4px;overflow:hidden}.bar i{display:block;height:100%;background:var(--acc);width:0}
-.tile small{font-size:10px;color:var(--dim);flex:1}
-.upb{font-size:11px;padding:2px 4px;margin:2px 2px 0;border-radius:6px}
-.upb:not(:disabled){border-color:var(--ok);color:var(--ok)}
-.card{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 8px;margin-bottom:6px;display:flex;justify-content:space-between;gap:6px;align-items:center}
+.tile .ts{font-size:11px;color:var(--dim);flex:1;font-variant-numeric:tabular-nums;padding-top:2px}
+.upb{font-size:11px;padding:3px 4px;margin:4px 2px 0;border-radius:7px}
+.upb:not(:disabled){border-color:#2c9d5a;color:var(--ok)}
+.upb.ms:not(:disabled){border-color:var(--gold);color:var(--gold)}
+/* --- cartes --- */
+.card{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:7px 9px;margin-bottom:6px;display:flex;justify-content:space-between;gap:6px;align-items:center}
 .card small{color:var(--dim);display:block;font-size:11px}
-.card.order{border-color:#6a4a1f}.card.order.ready{border-color:var(--ok);box-shadow:0 0 8px #5be38a55}
+.card.order{border-color:#6a4a1f}.card.order.ready{border-color:var(--ok);box-shadow:0 0 8px #5be38a40}
 .card[draggable=true]{cursor:grab}
-#orders{margin-bottom:10px}
-#side h2{margin-top:12px}#side>div:first-child h2{margin-top:0}
-#log{font-size:12px;color:var(--dim)}#log div{padding:2px 0}#log div:first-child{color:var(--txt)}
+#orders{margin-bottom:6px}
+#side h2{margin-top:14px}#side>div:first-child h2{margin-top:0}
+#log{font-size:12px;color:var(--dim)}#log div{padding:2px 0;border-bottom:1px solid #ffffff08}#log div:first-child{color:var(--txt)}
 .chip{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:1px 8px;margin:2px 2px 2px 0;font-size:12px}
 .card .chip{background:var(--panel)}
 .chip.leg{border-color:var(--gold);color:var(--gold)}
-#modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:10;padding:14px}
+/* --- modales --- */
+#modal{position:fixed;inset:0;background:#05031099;display:flex;align-items:center;justify-content:center;z-index:10;padding:14px;backdrop-filter:blur(3px)}
 #modal.hidden{display:none}
-#mbox{background:var(--panel);border:1px solid var(--acc2);border-radius:14px;padding:18px;max-width:700px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 0 40px #b56bff55}
-#mbox h1{color:var(--acc);font-size:22px;margin-bottom:6px}#mbox p{color:var(--dim);margin:6px 0}#mbox p b{color:var(--txt)}
-#mbox h2{margin-top:12px}
-.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px;margin:10px 0}
-.choice{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 10px;text-align:center;cursor:pointer;color:var(--txt)}
+#mbox{background:var(--panel);border:1px solid var(--acc2);border-radius:16px;padding:20px;max-width:760px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 0 40px #b56bff44;position:relative}
+#mbox.wide{max-width:980px}
+#mbox h1{color:var(--acc);font-size:22px;margin-bottom:6px;padding-right:30px}#mbox p{color:var(--dim);margin:6px 0}#mbox p b{color:var(--txt)}
+#mbox h2{margin-top:14px}
+.mx{position:absolute;top:12px;right:12px;width:30px;height:30px;padding:0;border-radius:50%}
+.choices{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:10px 0}
+.choice{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 10px;text-align:center;cursor:pointer;color:var(--txt)}
 .choice:hover:not(.off):not(:disabled){border-color:var(--acc);transform:translateY(-2px)}.choice .te{font-size:30px}.choice small{color:var(--dim);display:block;margin:2px 0}
 .choice.off{opacity:.4;cursor:not-allowed}.choice.done{border-color:var(--ok);opacity:.7;cursor:default}
 .choice.cur{border-color:var(--acc);box-shadow:0 0 8px #ff9d2e66}
 .choice.leg{border-color:var(--gold);box-shadow:0 0 14px #ffd84a44}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0}
+.stats div{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.stats small{display:block;color:var(--dim);font-size:11px}.stats b{font-size:17px}
+.prog{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:4px 16px;margin:8px 0}
+.prog div{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);border-bottom:1px dashed var(--line);padding:3px 0}.prog b{color:var(--txt)}
 #vip{position:absolute;font-size:34px;cursor:pointer;z-index:3;animation:bob .6s infinite alternate;filter:drop-shadow(0 0 8px var(--acc))}
 @keyframes bob{to{transform:translateY(-8px) rotate(8deg)}}
 #hint{color:var(--acc2);font-size:12px;margin-bottom:6px;min-height:16px}
 .float{position:fixed;pointer-events:none;z-index:20;font-weight:800;color:var(--gold);text-shadow:0 1px 3px #000;animation:fl .7s ease-out forwards}
 @keyframes fl{to{transform:translateY(-42px);opacity:0}}
 #toasts{position:fixed;right:12px;bottom:12px;z-index:30;display:flex;flex-direction:column;gap:6px;align-items:flex-end;pointer-events:none}
-.toast{background:var(--panel2);border:1px solid var(--acc);border-radius:10px;padding:8px 12px;max-width:320px;box-shadow:0 4px 14px #0008;animation:tin .25s ease-out}
+.toast{background:var(--panel2);border:1px solid var(--acc);border-radius:10px;padding:8px 12px;max-width:340px;box-shadow:0 4px 14px #0008;animation:tin .25s ease-out}
 @keyframes tin{from{transform:translateX(40px);opacity:0}}
-kbd{background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:0 5px;font-size:11px}
-.help{font-size:11px;color:var(--dim);margin-top:8px}
+kbd{background:var(--panel2);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;font-size:11px;font-family:inherit}
+.help{font-size:11px;color:var(--dim);margin-top:10px;line-height:1.7}
 </style>
 </head>
 <body>
 <header>
   <span class="logo">🌯 Kebab Cosmique</span>
-  <div class="stat"><small>Caisse</small><b id="money"></b><small id="income"></small></div>
-  <div class="stat grow"><small>Loyer + salaires ce soir <span id="dueTxt"></span></small><div class="pbar" id="rentbar"><i></i><span></span></div></div>
-  <div class="stat grow"><small>Jour <b id="day" style="color:var(--txt)"></b></small><div class="pbar" id="timer"><i></i><span></span></div></div>
-  <div class="stat"><small>Réputation</small><b id="rep"></b></div>
+  <div class="hs" id="moneyBox"><div><span class="lbl">Caisse</span><span class="big" id="money"></span></div><span class="sub" id="income"></span></div>
+  <div class="hs" id="dayBox"><div class="clock" id="clock"><span id="clockT"></span></div><div><span class="lbl">Jour</span><span class="big" id="day"></span></div></div>
+  <div class="hs" id="rentBox" title="Prélevé à la fin de la journée"><span id="rentIco"></span><div><span class="lbl">Loyer + salaires ce soir</span><span class="big" id="due"></span> <span class="sub" id="dueTxt"></span></div></div>
+  <div class="hs" title="Plus la réputation est haute, moins les prix chutent quand tu vends beaucoup"><div><span class="lbl">Réputation</span><span class="big" id="rep"></span></div></div>
+  <span class="hgap"></span>
   <div id="speeds"></div>
-  <button data-a="labo" id="laboBtn">🔬 Labo</button>
-  <button data-a="progress" title="Progression, succès, héritages">📖</button>
-  <div id="event"></div>
-  <div id="tuto"></div>
+  <button data-a="labo" id="laboBtn" class="hbtn" title="Labo de recherche (L)">🔬 Labo</button>
+  <button data-a="progress" class="hbtn" title="Progression, succès, héritages (P)">📖</button>
+  <button data-a="help" class="hbtn" title="Aide et raccourcis (H)">❔</button>
+  <div id="infobar"><span id="event"></span><span id="tuto"></span></div>
 </header>
 <main>
   <section id="mk">
     <h2>📦 Commandes du jour <small>payées ×2,5 · +5 % de réputation</small></h2><div id="orders"></div>
-    <h2>🧺 Stock &amp; marché <small>maintiens le bouton pour répéter · <kbd>Maj</kbd> = ×10</small></h2><div id="items"></div>
+    <h2>🧺 Stock &amp; marché <small>maintiens pour répéter · <kbd>Maj</kbd> ×10</small></h2><div id="items"></div>
   </section>
   <section id="base"><h2>🪨 Ton astéroïde <button data-a="plot" id="plotBtn"></button></h2><div id="hint"></div><div id="grid"></div>
-    <div class="help">Clic : détails · glisser-déposer : déplacer · les voisins (haut, bas, gauche, droite) se donnent des bonus 🔗 · production ×2 aux niveaux 10, 25, 50 et 100</div></section>
+    <div class="help">🖱️ <b>Clic</b> détails · <b>clic droit</b> améliorer (<kbd>Maj</kbd> = max) · <b>glisser</b> déplacer · survol + <kbd>U</kbd> améliorer<br>🔗 Les voisins (haut, bas, gauche, droite) se donnent des bonus · production ×2 aux niveaux 10, 25, 50 et 100</div></section>
   <section id="side">
     <div><h2>👽 Équipe <span id="staffN"></span></h2><div id="staff"></div></div>
     <div><h2>📋 Candidats <button data-a="reroll" id="rerollBtn"></button></h2><div id="cands"></div></div>
@@ -129,8 +179,11 @@ const ITEMS={
   frites:{n:'Frites quantiques',e:'🍟',v:20,r:{oignon:2,plasma:1},lock:1},
   soda:{n:'Soda de nébuleuse',e:'🥤',v:14,r:{glace:1,plasma:1},lock:1},
   dessert:{n:'Sundae supraconducteur',e:'🍨',v:18,r:{glace:2,ble:1},lock:1},
+  falafel:{n:'Falafel de météorite',e:'🧆',v:16,r:{ble:1,oignon:1},lock:1},
+  cafe:{n:'Café de matière noire',e:'☕',v:24,r:{plasma:2,glace:1},lock:1},
   kebab:{n:'Kebab cosmique',e:'🌯',v:60,r:{viande:1,pain:1,sauce:1}},
   formule:{n:'Formule étudiante',e:'🥡',v:110,r:{kebab:1,soda:1},lock:1},
+  assiette:{n:'Assiette du cosmonaute',e:'🥗',v:160,r:{falafel:3,frites:1,sauce:1},lock:1},
   menu:{n:'Menu Supernova',e:'🍱',v:200,r:{kebab:1,frites:2},lock:1},
   tacos:{n:'Tacos 12 dimensions',e:'🌮',v:700,r:{menu:2,sauce:3},lock:1},
   festin:{n:'Festin galactique',e:'🍽️',v:2800,r:{tacos:1,soda:3,dessert:3},lock:1}
@@ -146,13 +199,17 @@ const B={
   glace:{n:'Foreuse à comète',e:'❄️',cost:75,kind:'ext',res:'glace'},
   cuisine:{n:'Robot-cuistot',e:'🤖',cost:150,kind:'craft'},
   stand:{n:'Stand automatique',e:'🛸',cost:200,kind:'sell'},
-  hamster:{n:'Générateur à hamster',e:'🐹',cost:300,kind:'aura'}
+  hamster:{n:'Générateur à hamster',e:'🐹',cost:300,kind:'aura'},
+  neon:{n:'Enseigne néon',e:'💡',cost:250,kind:'neon',tech:'neon'},
+  drone:{n:'Drone livreur',e:'🚁',cost:600,kind:'deliv',tech:'drones'}
 };
 const KIND_TXT={
   ext:'🔗 +15 % par extracteur identique adjacent.',
   craft:'🔗 +20 % par voisin qui produit un de ses ingrédients.',
   sell:'🔗 +15 % sur le prix par voisin qui produit ce qu\'il vend.',
-  aura:'🔗 Accélère tous ses voisins (+25 %, puis +5 % par niveau).'
+  aura:'🔗 Accélère tous ses voisins (+25 %, puis +5 % par niveau).',
+  neon:'Réputation globale +8 % (+2 % par niveau). 🔗 +20 % sur le prix des stands voisins.',
+  deliv:'Livre tout seul les commandes du jour dès que le stock suffit. Plus il monte en niveau, plus il repart vite.'
 };
 const SPEC={ext:'Fermier',craft:'Cuistot',sell:'Vendeur'};
 const PERKS={
@@ -176,6 +233,10 @@ const PERKS={
   fidelite:{n:'Carte de fidélité',e:'💳',d:'Réputation +3% par jour écoulé'},
   pourboire:{n:'Bocal à pourboires',e:'🫙',d:'Clients pressés 2× plus généreux'},
   interets:{n:'Livret Ⱥ',e:'🏦',d:'Chaque matin : +5% de la caisse (max un demi-loyer)'},
+  livreur:{n:'Livreurs en trottinette',e:'🛴',d:'+1 commande par jour'},
+  happy:{n:'Happy hour permanent',e:'🍻',d:'Les cours se remettent 2× plus vite après tes ventes'},
+  cafeine:{n:'Café à volonté',e:'☕',d:'Employés +20% d\'efficacité'},
+  recyclage:{n:'Ferrailleur ami',e:'♻️',d:'Démolir rembourse 100% du prix de base'},
   midas:{leg:1,n:'Louche de Midas',e:'🥄',d:'Prix de vente +40%'},
   singul:{leg:1,n:'Singularité culinaire',e:'🧠',d:'Cuisine auto ×2'},
   friteuse:{leg:1,n:'Friteuse à antimatière',e:'⚛️',d:'Tous les plats cuisinés valent +30%'},
@@ -183,6 +244,8 @@ const PERKS={
   trou:{leg:1,n:'Trou de ver logistique',e:'🌀',d:'Synergies d\'adjacence doublées'},
   noir:{leg:1,n:'Marché noir',e:'🕶️',d:'Les prix s\'effondrent moins (plancher +20 pts)'},
   pacte:{leg:1,n:'Pacte avec le proprio',e:'🤝',d:'Loyer -25% à vie'},
+  temps:{leg:1,n:'Boucle temporelle',e:'⏳',d:'+20 s par jour'},
+  franchise:{leg:1,n:'Franchise galactique',e:'🏪',d:'Stands automatiques 2× plus rapides'},
   fantome:{leg:1,n:'Usine fantôme',e:'👻',d:'+3 niveaux gratuits sur chaque bâtiment',now:()=>{S.plots.forEach(b=>{if(b)b.lvl+=3})}}
 };
 const TECH={
@@ -200,7 +263,13 @@ const TECH={
   tapis2:{n:'Cuisine à téléportation',e:'✨',c:40000,d:'Cuisine auto +60%',req:'tapis'},
   formule:{n:'Brevet : Formule étudiante',e:'🥡',c:5000,d:'Débloque la recette',req:'soda'},
   pub:{n:'Pub sur la face cachée de la Lune',e:'🌘',c:60000,d:'Réputation ×2',req:'drive'},
-  festin:{n:'Brevet : Festin galactique',e:'🍽️',c:150000,d:'Débloque la recette',req:'tacos'}
+  festin:{n:'Brevet : Festin galactique',e:'🍽️',c:150000,d:'Débloque la recette',req:'tacos'},
+  falafel:{n:'Brevet : Falafel de météorite',e:'🧆',c:400,d:'Débloque la recette'},
+  neon:{n:'Licence d\'enseigne néon',e:'💡',c:1000,d:'Débloque le bâtiment Enseigne néon'},
+  cafe:{n:'Brevet : Café de matière noire',e:'☕',c:1500,d:'Débloque la recette'},
+  drones:{n:'Permis de drones',e:'🚁',c:3500,d:'Débloque le bâtiment Drone livreur'},
+  assiette:{n:'Brevet : Assiette du cosmonaute',e:'🥗',c:9000,d:'Débloque la recette',req:'falafel'},
+  compta:{n:'Comptable véreux',e:'🧮',c:15000,d:'Salaires −25 %'}
 };
 const ARCH={
   trad:{n:'Kebabier traditionnel',e:'🥙',d:'+150 ₭ de départ. Simple, efficace.',cash:150},
@@ -213,7 +282,10 @@ const ARCH={
   gastro:{n:'Bistronomie moléculaire',e:'🍷',d:'Plats cuisinés +50 % de valeur. Réputation −40 %.',gval:1.5,rep:.6,unl:0},
   usine:{n:'Usine à kebabs',e:'🏭',d:'Extraction et cuisine +30 %. Prix de vente −25 %.',ext:1.3,craft:1.3,price:.75,unl:1},
   luxe:{n:'Kebab à la feuille d\'or',e:'💎',d:'Prix de vente +40 %. Loyer +30 %.',price:1.4,rent:1.3,unl:2},
-  radin:{n:'Self-service intégral',e:'🪙',d:'Aucun employé possible. Bâtiments 30 % moins chers.',staff:-99,cost:.7,unl:3}
+  radin:{n:'Self-service intégral',e:'🪙',d:'Aucun employé possible. Bâtiments 30 % moins chers.',staff:-99,cost:.7,unl:3},
+  vegan:{n:'Food-truck végane',e:'🧆',d:'Falafel déjà breveté. Falafels et assiettes ×2, broches de ver −50 %.',tech:['falafel'],val:{falafel:2,assiette:2,viande:.5},unl:1},
+  startup:{n:'Startup de livraison',e:'🚁',d:'Permis de drones offert. +1 commande par jour, payées +30 %. Extraction −15 %.',tech:['drones'],ord:1,ordPay:1.3,ext:.85,unl:4},
+  barista:{n:'Bar à café spatial',e:'☕',d:'Café déjà breveté et vendu ×2. Réputation +25 %. Loyer +10 %.',tech:['cafe'],val:{cafe:2},rep:1.25,rent:1.1,unl:5}
 };
 const EVENTS=[
   {n:'Journée calme',d:'Rien à signaler. C\'est louche.'},
@@ -227,7 +299,13 @@ const EVENTS=[
   {n:'Soldes interstellaires',d:'Améliorations de bâtiments -25% aujourd\'hui',up:.75},
   {n:'Canicule solaire',d:'Sodas, sundaes et formules valent ×2',cold:2},
   {n:'Marée de plasma',d:'Extraction +30%, cuisine auto +30%',ext:1.3,craft:1.3},
-  {n:'Krach du ver des sables',d:'Prix -35%, mais réputation ×1,5',price:.65,rep:1.5}
+  {n:'Krach du ver des sables',d:'Prix -35%, mais réputation ×1,5',price:.65,rep:1.5},
+  {n:'Festival du kebab',d:'Kebabs et formules valent ×2',vk:{kebab:2,formule:2}},
+  {n:'Nuit glaciale',d:'Cafés ×3, sodas et sundaes −30%',vk:{cafe:3,soda:.7,dessert:.7}},
+  {n:'Tempête solaire',d:'Stands automatiques −50%, mais clic ×2',sell:.5,click:2},
+  {n:'Semaine végane',d:'Falafels et assiettes ×2, broches de ver −50%',vk:{falafel:2,assiette:2,viande:.5}},
+  {n:'Embouteillage d\'astronefs',d:'Clients pressés 3× plus fréquents',vip:3},
+  {n:'Ruée vers l\'or',d:'Commandes du jour payées ×1,5',ord:1.5}
 ];
 const BOSS={n:'👹 Visite du Proprio en personne',d:'Loyer ×1,5 ce soir — mais un bonus LÉGENDAIRE si tu survis',boss:1};
 // Dilemmes du matin : chaque option = [titre, effet décrit, fonction]
@@ -266,7 +344,19 @@ const DILEMMAS=[
     ['Appeler la sécurité','Rien ne se passe',()=>{}]]}},
   ()=>({t:'🌠 Une comète frôle l\'astéroïde',d:'Elle laisse une traînée de glace… et de touristes.',o:[
     ['Récolter la glace',`+${40*S.day} ❄️ Glace de comète`,()=>{S.inv.glace+=40*S.day}],
-    ['Vendre des selfies','Réputation +15 % pour toute la run',()=>{S.repB+=.15}]]})
+    ['Vendre des selfies','Réputation +15 % pour toute la run',()=>{S.repB+=.15}]]}),
+  ()=>({t:'🕵️ Le fisc galactique frappe à la porte',d:'« Simple contrôle de routine. Vous avez bien déclaré la friteuse ? »',o:[
+    ['Payer l\'amende',`−${fmt(S.money*.15)} ₭`,()=>{S.money*=.85}],
+    ['Tout planquer dans la friteuse','2 chances sur 3 : rien. Sinon −40 % de caisse',()=>{if(Math.random()<1/3){S.money*=.6;toast('🕵️ Ils ont regardé dans la friteuse. −40 % de caisse.')}else toast('🕵️ Ils sont repartis bredouilles.')}]]}),
+  ()=>({t:'🎤 Un influenceur cosmique veut filmer ton stand',d:'Il a 40 milliards d\'abonnés et un ring light qui bloque la cuisine.',o:[
+    ['Le laisser filmer','Réputation ×2 aujourd\'hui, cuisine auto −25 %',()=>{S.dm.rep*=2;S.dm.craft*=.75}],
+    ['Lui faire payer le tournage',`+${fmt(rent()*.25)} ₭`,()=>{S.money+=rent()*.25}]]}),
+  ()=>{const bs=S.plots.map((b,i)=>b?i:-1).filter(i=>i>=0),c=S.money*.25;return{t:'🧬 Un généticien propose de « booster » une machine',d:'« Je ne garantis pas laquelle. Ni ce qu\'elle deviendra. »',o:[
+    ['Accepter',bs.length?`−${fmt(c)} ₭ : un bâtiment au hasard gagne +5 niveaux`:'Tu n\'as aucun bâtiment…',bs.length?()=>{const i=pick(bs);S.money-=c;S.plots[i].lvl+=5;toast('🧬 '+B[S.plots[i].type].n+' passe au niveau '+S.plots[i].lvl+' !')}:null],
+    ['Refuser','Rien ne se passe',()=>{}]]}},
+  ()=>{const c=rent()*.8,ok=S.plots.length<maxPlots()&&S.money>=c;return{t:'🐙 Un concurrent ouvre un stand juste en face',d:'« Kebab Quantique ». Même logo. Même sauce. Moins cher.',o:[
+    ['Casser les prix','Prix −15 % aujourd\'hui, réputation +15 % pour toute la run',()=>{S.dm.price*=.85;S.repB+=.15}],
+    ['Racheter son terrain',ok?`−${fmt(c)} ₭ : +1 parcelle`:'Pas assez de caisse ou astéroïde plein…',ok?()=>{S.money-=c;S.plots.push(null)}:null]]}}
 ];
 const TRAITS=[['Feignasse',.7,4,30],['Stagiaire',1.25,8,30],['Bosseur',1.6,18,22],['Hyperactif',2.2,40,12],['Génie incompris',3.5,110,6]];
 const NAMES=['Zorg','Blip','Gérard','Mme Tentacule','Kevin-9000','Xül','Bob le Slime','Josiane','Ploup','Dr Morve','Glorb','Maurice (un pigeon)','Sœur Quasar','Tonton Neutron'];
@@ -292,7 +382,7 @@ const TUTO=[
   ['Construis ton premier bâtiment sur une parcelle ＋ de l\'astéroïde',()=>S.plots.some(b=>b)],
   ['Crée une synergie 🔗 : pose un Robot-cuistot à côté d\'un bâtiment qui produit son ingrédient',()=>S.plots.some((b,i)=>b&&(adjBonus(i).sp>1||adjBonus(i).pr>1))],
   ['Embauche un employé et affecte-le à un bâtiment (glisse sa carte dessus)',()=>S.staff.some(s=>s.at!=null)],
-  ['Achète une recherche au 🔬 Labo',()=>Object.keys(S.tech).length>(ARCH[S.arch].tech||[]).length]
+  ['Achète une recherche au 🔬 Labo',()=>(S.nTech||0)>0]
 ];
 const WORLDS=[
   {n:'Astéroïde B-612 bis',e:'🪨',d:'La banlieue galactique. Règles normales.',rent:1,win:25},
@@ -302,7 +392,9 @@ const WORLDS=[
   {n:'Géante Gazeuse',e:'🪐',d:'Journées de 45 s. Tout se vend +30 %.',rent:2.8,win:28,dayLen:45,val:1.3},
   {n:'Nébuleuse Fiscale',e:'🌫️',d:'Salaires ×3, mais +2 places d\'employés.',rent:3.5,win:30,wage:3,staff:2},
   {n:'Trou Noir Central',e:'🕳️',d:'Le marché sature 2× plus vite. Prix +25 %.',rent:4.5,win:30,sat:2,price:1.25},
-  {n:'Dimension Kebab',e:'🌀',d:'Le Proprio vient tous les 3 jours (et laisse un légendaire).',rent:6,win:30,boss:3}
+  {n:'Dimension Kebab',e:'🌀',d:'Le Proprio vient tous les 3 jours (et laisse un légendaire).',rent:6,win:30,boss:3},
+  {n:'Planète Végane',e:'🥦',d:'Falafel déjà breveté. Falafels et assiettes ×3, broches de ver presque invendables.',rent:7,win:30,vk:{viande:.1,falafel:3,assiette:3},tech:['falafel']},
+  {n:'Restaurant du bout de l\'Univers',e:'🌌',d:'Journées de 40 s. Prix +60 %. Le Proprio vient tous les 4 jours.',rent:9,win:32,dayLen:40,price:1.6,boss:4}
 ];
 const KEYS={
   depart:{n:'Terrain viabilisé',d:'Démarre avec une Ferme à vers et un Champ lunaire',c:3},
@@ -337,7 +429,11 @@ const ACH=[
   mkA('nostaff','Auto-entrepreneur','Gagner sans jamais embaucher',20,()=>S.won&&!S.hired),
   mkA('nolabo','À l\'ancienne','Gagner sans rien acheter au Labo',20,()=>S.won&&!S.nTech),
   mkA('archs','Franchiseur','Gagner avec chaque enseigne',40,()=>Object.keys(ARCH).every(k=>meta.archWins[k])),
-  mkA('worlds','Conquérant','Gagner sur chaque monde',40,()=>WORLDS.every((w,i)=>meta.wins[i+'_0']))
+  mkA('worlds','Conquérant','Gagner sur chaque monde',40,()=>WORLDS.every((w,i)=>meta.wins[i+'_0'])),
+  mkA('drone','Ciel encombré','Livrer 100 commandes par drone au total',12,()=>(meta.drone||0)>=100),
+  mkA('assiette','Diététicien de l\'espace','Cuisiner une Assiette du cosmonaute',8,()=>!!S.made.assiette),
+  mkA('neon3','Las Vegas orbital','Avoir 3 enseignes néon en même temps',8,()=>count('neon')>=3),
+  mkA('wEnd','Au bout de l\'Univers','Gagner sur le dernier monde',30,()=>S.won&&S.world===WORLDS.length-1)
 ];
 const RENT0=200,RENTG=1.2,RENTP=1.3,UPG=1.35,VER=4;
 
@@ -354,14 +450,21 @@ function fmt(n){
   return n>=1000?n.toExponential(2):n.toFixed(n<10?2:n<100?1:0)+u[i];
 }
 const pct=x=>(x>=1?'+':'')+Math.round((x-1)*100)+'%';
-let meta={stars:0,best:0,up:{},tuto:0,wins:{},keys:0,kup:{},ach:{},made:{},sel:{},archWins:{},runs:0,total:0,orders:0,vip:0,time:0};
+let meta={stars:0,best:0,up:{},tuto:0,wins:{},keys:0,kup:{},ach:{},made:{},sel:{},archWins:{},runs:0,total:0,orders:0,vip:0,drone:0,time:0};
 try{Object.assign(meta,JSON.parse(localStorage.getItem('kebabcosmique_meta')||'{}'))}catch(e){}
 const mu=k=>meta.up[k]||0;
 function saveMeta(){try{localStorage.setItem('kebabcosmique_meta',JSON.stringify(meta))}catch(e){}}
 function saveRun(){try{if(S&&!S.block&&!S.over)localStorage.setItem('kebabcosmique_run',JSON.stringify(S))}catch(e){}}
-function loadRun(){try{const r=JSON.parse(localStorage.getItem('kebabcosmique_run'));return r&&r.v===VER?r:null}catch(e){return null}}
+function loadRun(){try{const r=JSON.parse(localStorage.getItem('kebabcosmique_run'));return r&&r.v===VER?migrate(r):null}catch(e){return null}}
+// complète une sauvegarde faite avec une version plus ancienne (nouveaux plats, nouveaux champs)
+function migrate(r){
+  for(const k in ITEMS){if(r.inv[k]==null)r.inv[k]=0;for(const f of ['trend','prev','sat'])if(r[f][k]==null)r[f][k]=1}
+  r.dm=Object.assign({ext:1,craft:1,price:1,rent:1,wage:1,rep:1},r.dm);
+  r.plots=r.plots.map(b=>b&&B[b.type]?b:null);r.perks=r.perks||{};r.tech=r.tech||{};r.event=r.event||EVENTS[0];
+  return r;
+}
 function clearRun(){try{localStorage.removeItem('kebabcosmique_run')}catch(e){}}
-let S,vipT=null,dilFns=[],flowCache={},frame=0,selW=0,selH=0,progBack=null;
+let ui={locked:false,hover:null,fire:null},S,vipT=null,dilFns=[],flowCache={},frame=0,selW=0,selH=0,progBack=null;
 const mkB=t=>({type:t,lvl:1,prog:0,recipe:'viande',sell:'kebab',st:''});
 const world=()=>WORLDS[S.world||0];
 const isBoss=d=>d%(world().boss||5)===0;
@@ -378,7 +481,7 @@ function newRun(arch='trad',wi=0,heat=0){
   S={v:VER,arch,world:wi,heat,won:false,money:40+50*mu('capital')+(a.cash||0)+(meta.kup.heritage2?1000:0),day:1,t:60,tt:0,inv:{},trend:{},prev:{},sat:{},plots:[],bought:0,staff:[],cands:[],orders:[],
      perks:{},tech:{},made:{},dm:{ext:1,craft:1,price:1,rent:1,wage:1,rep:1},event:EVENTS[0],speed:1,prevSpeed:1,block:true,assigning:null,moving:null,
      earned:0,dayStart:0,ema:0,repB:0,tuto:meta.tuto?99:0,log:[],modal:null,over:null};
-  (a.tech||[]).forEach(t=>S.tech[t]=1);
+  (a.tech||[]).concat(WORLDS[wi].tech||[]).forEach(t=>S.tech[t]=1);
   for(const k in ITEMS){S.inv[k]=0;S.trend[k]=1;S.prev[k]=1;S.sat[k]=1}
   for(let i=0;i<9+mu('parcelle')+(WORLDS[wi].plots||0);i++)S.plots.push(null);
   S.t=dayLen();
@@ -386,7 +489,7 @@ function newRun(arch='trad',wi=0,heat=0){
   if(meta.kup.labo0)S.tech.import=1;
   if(meta.kup.leg)S.perks[pick(['friteuse','clone','trou','noir','pacte','midas','singul'])]=1;
   genCands();genOrders();
-  log('Bienvenue sur l\'astéroïde B-612 bis. Le proprio passe ce soir.');
+  log(`Bienvenue sur ${WORLDS[wi].e} ${WORLDS[wi].n}. Le proprio passe ce soir.`);
 }
 const pk=k=>S.perks[k]||0;
 const arch=()=>ARCH[S.arch]||{};
@@ -395,17 +498,20 @@ function mods(){
   return{ext:p*Math.pow(1.3,pk('vers'))*(ev.ext||1)*(a.ext||1)*dm.ext*(T.engrais?1.4:1)*(T.engrais2?1.6:1)*(w.ext||1),
     craft:p*Math.pow(1.3,pk('robots'))*(ev.craft||1)*(a.craft||1)*dm.craft*(T.tapis?1.4:1)*(T.tapis2?1.6:1)*(w.craft||1)*Math.pow(2,pk('singul')),
     price:(1+.05*mu('prix'))*Math.pow(1.15,pk('baratin'))*(ev.price||1)*(a.price||1)*dm.price*(w.price||1)*Math.pow(1.4,pk('midas')),
-    click:(1+mu('clic'))*Math.pow(2,pk('doigts'))*(a.click||1)*(w.click||1),
-    sell:T.drive?2:1,
-    rep:(1+.25*(S.day-1))*(1+S.repB)*Math.pow(1.5,pk('bouche'))*(ev.rep||1)*(a.rep||1)*dm.rep*(T.drive?1.25:1)*(T.pub?2:1)*(w.rep||1)*(1+.05*mu('rep'))*(1+.03*S.day*pk('fidelite'))};
+    click:(1+mu('clic'))*Math.pow(2,pk('doigts'))*(a.click||1)*(w.click||1)*(ev.click||1),
+    sell:(T.drive?2:1)*(ev.sell||1)*Math.pow(2,pk('franchise')),
+    rep:(1+.25*(S.day-1))*(1+S.repB)*Math.pow(1.5,pk('bouche'))*(ev.rep||1)*(a.rep||1)*dm.rep*(T.drive?1.25:1)*(T.pub?2:1)*(w.rep||1)*(1+.05*mu('rep'))*(1+.03*S.day*pk('fidelite'))*neonRep()};
 }
 const rentAt=d=>RENT0*Math.pow(d,RENTP)*Math.pow(RENTG,d-1)*Math.pow(.9,pk('nego'))*Math.pow(.75,pk('pacte'))*(arch().rent||1)*world().rent*Math.pow(1.12,S.heat||0)*(isBoss(d)?1.5:1);
 const rent=()=>rentAt(S.day)*S.dm.rent;
-const wages=()=>S.staff.reduce((a,s)=>a+s.wage,0)*Math.pow(.7,pk('syndicat'))*(arch().wage||1)*S.dm.wage*(world().wage||1)*(1+.1*(S.heat||0));
-const dayLen=()=>(world().dayLen||60)+10*pk('rallonge')+2*mu('jour');
+const neonRep=()=>S.plots.reduce((a,b)=>b&&b.type==='neon'?a+.06+.02*b.lvl:a,1);
+const wages=()=>S.staff.reduce((a,s)=>a+s.wage,0)*Math.pow(.7,pk('syndicat'))*(S.tech.compta?.75:1)*(arch().wage||1)*S.dm.wage*(world().wage||1)*(1+.1*(S.heat||0));
+const dayLen=()=>(world().dayLen||60)+10*pk('rallonge')+20*pk('temps')+2*mu('jour');
 const staffMax=()=>Math.max(0,3+mu('staff')+pk('lits')+(arch().staff||0)+(world().staff||0));
 const unlocked=k=>!ITEMS[k].lock||!!S.tech[k];
-const val=k=>ITEMS[k].v*(ITEMS[k].r?Math.pow(1.3,pk('friteuse'))*(arch().gval||1)*(1+.03*mLvl(k)):1)*((arch().val||{})[k]||1)*(world().val||1)*(COLD.includes(k)?Math.pow(1.5,pk('glacier'))*(S.event.cold||1):1);
+const bOpen=t=>!B[t].tech||!!S.tech[B[t].tech];
+const PROD=['ext','craft','sell'];
+const val=k=>ITEMS[k].v*((S.event.vk||{})[k]||1)*((world().vk||{})[k]||1)*(ITEMS[k].r?Math.pow(1.3,pk('friteuse'))*(arch().gval||1)*(1+.03*mLvl(k)):1)*((arch().val||{})[k]||1)*(world().val||1)*(COLD.includes(k)?Math.pow(1.5,pk('glacier'))*(S.event.cold||1):1);
 const price=k=>val(k)*S.trend[k]*Math.min(1,S.sat[k])*mods().price;
 const buyPrice=k=>val(k)*S.trend[k]*Math.max(1,S.sat[k])*1.5*mods().price;
 const satFloor=()=>Math.min(.85,.4+.2*pk('noir'));
@@ -417,7 +523,7 @@ const techCost=k=>TECH[k].c*Math.pow(.92,mu('labo'))*Math.pow(.8,pk('bourse'));
 const msMult=l=>Math.pow(meta.kup.ms?2.5:2,MILESTONES.filter(m=>l>=m).length);
 const nextMs=l=>MILESTONES.find(m=>l<m);
 const workerOf=i=>S.staff.find(s=>s.at===i);
-const empMult=(s,kind)=>(s.mult+.08*s.xp)*(s.spec&&s.spec===kind?1.4:1)*Math.pow(1.5,pk('clone'));
+const empMult=(s,kind)=>(s.mult+.08*s.xp)*(s.spec&&s.spec===kind?1.4:1)*Math.pow(1.5,pk('clone'))*Math.pow(1.2,pk('cafeine'));
 const wMult=i=>{const w=workerOf(i);return w?empMult(w,B[S.plots[i].type].kind):1};
 const auraPow=b=>.2+.05*b.lvl;
 function neigh(i){const r=[i-COLS,i+COLS];if(i%COLS)r.push(i-1);if(i%COLS<COLS-1)r.push(i+1);return r.filter(j=>j>=0&&j<S.plots.length&&S.plots[j])}
@@ -427,6 +533,7 @@ function adjBonus(i){
   if(d.kind!=='aura')for(const j of neigh(i)){
     const o=S.plots[j],od=B[o.type];
     if(od.kind==='aura'){sp+=auraPow(o);continue}
+    if(od.kind==='neon'){if(d.kind==='sell')pr+=.2;continue}
     const p=produces(o);
     if(d.kind==='ext'&&o.type===b.type)sp+=.15;
     if(d.kind==='craft'&&p&&ITEMS[b.recipe].r[p])sp+=.2;
@@ -455,21 +562,21 @@ function genOrders(){
   const cap=S.day<3?20:S.day<6?60:S.day<10?200:S.day<15?700:1e9;
   const pool=RECIPES.filter(k=>ITEMS[k].v<=cap&&unlocked(k));
   S.orders=[];
-  for(let i=0;i<(S.day>=4?3:2)+(meta.kup.ordres?1:0);i++){
+  for(let i=0;i<(S.day>=4?3:2)+(meta.kup.ordres?1:0)+pk('livreur')+(arch().ord||0);i++){
     const k=pick(pool),v=rent()*(.15+Math.random()*.2);
     S.orders.push({k,q:Math.max(2,Math.round(v/(val(k)*2.5))),c:pick(CLIENTS)});
   }
 }
-const orderPay=o=>o.q*val(o.k)*2.5*mods().price*Math.pow(1.4,pk('traiteur'));
+const orderPay=o=>o.q*val(o.k)*2.5*mods().price*Math.pow(1.4,pk('traiteur'))*(S.event.ord||1)*(arch().ordPay||1);
 function rateOf(b,i,a,m){
   m=m||mods();const d=B[b.type],w=wMult(i);a=a||adjBonus(i);
-  return (d.kind==='ext'?.5*m.ext:d.kind==='craft'?.4*m.craft:m.sell)*b.lvl*msMult(b.lvl)*w*a.sp;
+  return (d.kind==='ext'?.5*m.ext:d.kind==='craft'?.4*m.craft:d.kind==='deliv'?.05:m.sell)*b.lvl*msMult(b.lvl)*w*a.sp;
 }
 function flows(){
   const f={},m=mods();for(const k in ITEMS)f[k]=0;
   if(pk('pigeon'))RAW.forEach(k=>f[k]+=pk('pigeon')*m.ext);
   S.plots.forEach((b,i)=>{
-    if(!b)return;const d=B[b.type];if(d.kind==='aura')return;const r=rateOf(b,i,null,m);
+    if(!b)return;const d=B[b.type];if(!PROD.includes(d.kind))return;const r=rateOf(b,i,null,m);
     if(d.kind==='ext')f[d.res]+=r;
     else if(d.kind==='craft'){f[b.recipe]+=r;for(const j in ITEMS[b.recipe].r)f[j]-=r*ITEMS[b.recipe].r[j]}
     else f[b.sell]-=r;
@@ -484,14 +591,19 @@ function tick(dt){
   const m=mods(),e0=S.earned;
   S.tt+=dt;
   if(S.tt>=4){S.tt=0;for(const k in ITEMS){S.prev[k]=S.trend[k];const vo=world().vol||1;S.trend[k]=clamp(S.trend[k]+(Math.random()-.5)*.24*vo,1-.4*Math.min(vo,2),1+.6*vo)}}
-  for(const k in ITEMS)S.sat[k]+=(1-S.sat[k])*Math.min(1,.15*dt);
+  for(const k in ITEMS)S.sat[k]+=(1-S.sat[k])*Math.min(1,.15*(1+pk('happy'))*dt);
   if(pk('pigeon'))for(const k of RAW)S.inv[k]+=pk('pigeon')*m.ext*dt;
   S.plots.forEach((b,i)=>{
     if(!b)return;
     const d=B[b.type];
-    if(d.kind==='aura'){b.prog=1;b.st='aura '+pct(1+auraPow(b)*(1+pk('trou')));return}
+    if(d.kind==='aura'){b.stuck=0;b.st='voisins '+pct(1+auraPow(b)*(1+pk('trou')));return}
+    if(d.kind==='neon'){b.stuck=0;b.st='réputation +'+Math.round((.06+.02*b.lvl)*100)+' %';return}
     const a=adjBonus(i),r=rateOf(b,i,a,m);
-    if(d.kind==='ext'){S.inv[d.res]+=r*dt;b.prog=(b.prog+r*dt)%1;b.st='+'+fmt(r)+'/s';b.stuck=0;return}
+    if(d.kind==='deliv'){
+      b.prog=Math.min(1,b.prog+r*dt);
+      if(b.prog>=1){const o=S.orders.findIndex(o=>S.inv[o.k]>=o.q);if(o>=0){deliverOrder(o,null,1);b.prog=0}}
+      b.stuck=0;b.st=b.prog>=1?(S.orders.length?'⏳ attend du stock':'✔ tout est livré'):'🚁 en vol · '+Math.ceil((1-b.prog)/r)+' s';return}
+    if(d.kind==='ext'){S.inv[d.res]+=r*dt;b.st='+'+fmt(r)+' '+ITEMS[d.res].e+'/s';b.stuck=0;return}
     b.prog+=r*dt;const n=Math.floor(b.prog);
     if(n<1)return;
     let c;
@@ -500,7 +612,7 @@ function tick(dt){
     b.prog-=c;if(b.prog>1)b.prog=1;
   });
   const al=Math.min(1,dt/4);S.ema+=((S.earned-e0)/dt-S.ema)*al;
-  if(!vipT&&Math.random()<dt/30*(meta.kup.vip?2:1))spawnVip();
+  if(!vipT&&Math.random()<dt/30*(meta.kup.vip?2:1)*(S.event.vip||1))spawnVip();
   if(S.t<=0)endDay();
 }
 function missing(k){for(const i in ITEMS[k].r)if(S.inv[i]<ITEMS[k].r[i])return ITEMS[i].e;return ''}
@@ -538,7 +650,8 @@ function showVictory(){
 function showPerks(due){
   S.lastDue=due;
   const boss=S.event.boss;
-  const ids=shuffle(Object.keys(PERKS).filter(k=>!!PERKS[k].leg===!!boss)).slice(0,3+mu('choix'));
+  const useless={squat:S.plots.length>=maxPlots(),lits:(arch().staff||0)<-50,cafeine:(arch().staff||0)<-50,clone:(arch().staff||0)<-50,formation:(arch().staff||0)<-50,syndicat:(arch().staff||0)<-50};
+  const ids=shuffle(Object.keys(PERKS).filter(k=>!!PERKS[k].leg===!!boss&&!useless[k])).slice(0,3+mu('choix'));
   const nd=S.day+1;
   modal('perks',`<h1>${boss?'👹 Proprio repoussé !':'🌙 Jour '+S.day+' survécu !'}</h1>
   <p>Recette du jour : <b>${fmt(S.earned-S.dayStart)} ₭</b> · payé au proprio : <b>${due?fmt(due)+' ₭':'0 ₭ (merci l\'assurance)'}</b> · reste en caisse : <b>${fmt(S.money)} ₭</b></p>
@@ -580,16 +693,32 @@ function completion(){
 }
 const pctDone=()=>(Math.floor(completion().total*1000)/10).toFixed(1)+' %';
 function showProgress(){
-  const c=completion(),L=['Améliorations ⭐','Succès','Victoires (8 mondes × 11 piments)','Maîtrises de recettes','Héritages 🔑','Enseignes victorieuses'];
+  const c=completion(),L=['Améliorations ⭐','Succès',`Victoires (${WORLDS.length} mondes × 11 piments)`,'Maîtrises de recettes','Héritages 🔑','Enseignes victorieuses'];
   const h=Math.floor(meta.time/3600),m=Math.floor(meta.time%3600/60);
   modal('prog',`<h1>📖 Progression — ${pctDone()}</h1>
   <p>Temps de jeu : <b>${h} h ${m} min</b> · runs : <b>${meta.runs}</b> · record : <b>jour ${meta.best}</b> · ⭐ <b>${meta.stars}</b> · 🔑 <b>${meta.keys}</b></p>
-  ${c.p.map((v,i)=>`<small>${L[i]} — ${Math.floor(v*100)} %</small><div class="bar" style="height:8px;margin:2px 0 8px"><i style="width:${v*100}%"></i></div>`).join('')}
+  <div class="prog">${c.p.map((v,i)=>`<div>${L[i]} <b>${Math.floor(v*100)} %</b></div>`).join('')}</div>
   <h2>🔑 Héritages <small>1 clé à chaque première victoire (monde × piment)</small></h2><div class="choices">${Object.keys(KEYS).map(k=>{const d=KEYS[k];
     return meta.kup[k]?`<div class="choice done"><b>${d.n}</b><small>${d.d}</small>✔</div>`:`<div class="choice ${meta.keys<d.c?'off':''}" ${meta.keys<d.c?'':`data-a="kbuy" data-x="${k}"`}><b>${d.n}</b><small>${d.d}</small>🔑 ${d.c}</div>`}).join('')}</div>
   <h2>🏅 Succès ${ACH.filter(a=>meta.ach[a.id]).length}/${ACH.length}</h2><div class="choices">${ACH.map(a=>`<div class="choice ${meta.ach[a.id]?'done':'off'}" style="cursor:default"><b>${a.n}</b><small>${a.d}</small>${meta.ach[a.id]?'✔':'⭐ '+a.r}</div>`).join('')}</div>
   <h2>🍳 Maîtrises <small>+3 % de valeur par niveau, cumul sur toutes les runs</small></h2><div class="choices">${RECIPES.map(k=>{const l=mLvl(k),n=meta.made[k]||0;return `<div class="choice ${l>=5?'done':''}" style="cursor:default"><div class="te">${ITEMS[k].e}</div><b>${ITEMS[k].n}</b><small>Niveau ${l}/5</small><small>${fmt(n)}${l<5?' / '+fmt(mThr(k,l)):''} cuisinés</small></div>`}).join('')}</div>
   <button data-a="progClose">Fermer</button>`);
+}
+function showHelp(){
+  modal('help',`<h1>❔ Aide &amp; raccourcis</h1>
+  <h2>Clavier</h2><div class="prog">
+  <div><kbd>Espace</kbd> <b>pause / reprendre</b></div><div><kbd>1</kbd>–<kbd>4</kbd> <b>vitesse ½× à 4×</b></div>
+  <div><kbd>L</kbd> <b>Labo</b></div><div><kbd>P</kbd> <b>Progression</b></div>
+  <div><kbd>H</kbd> <b>cette aide</b></div><div><kbd>Échap</kbd> <b>fermer / annuler</b></div>
+  <div>survol d'un bâtiment + <kbd>U</kbd> <b>améliorer</b></div><div>survol + <kbd>Maj</kbd>+<kbd>U</kbd> <b>améliorer au max</b></div>
+  <div>survol + <kbd>M</kbd> <b>déplacer</b></div><div><kbd>Maj</kbd> + clic au marché <b>×10</b></div></div>
+  <h2>Souris</h2><div class="prog">
+  <div>Clic sur un bâtiment <b>détails, recette</b></div><div>Clic droit sur un bâtiment <b>améliorer</b></div>
+  <div>Glisser un bâtiment <b>le déplacer</b></div><div>Glisser un employé <b>l'affecter</b></div>
+  <div>Maintenir un bouton du marché <b>répéter</b></div><div>Clic hors d'une fenêtre <b>la fermer</b></div></div>
+  <h2>Bâtiments</h2><div class="prog">${Object.keys(B).map(t=>`<div>${B[t].e} ${B[t].n} <b>${fmt(B[t].cost)} ₭</b></div>`).join('')}</div>
+  <p>${Object.keys(KIND_TXT).map(k=>KIND_TXT[k]).join('<br>')}</p>
+  <button data-a="close">Fermer</button>`);
 }
 function showWorlds(){
   modal('worlds',`<h1>🚀 Où ouvrir le stand ?</h1><p>Rachète le bail en survivant jusqu'au jour indiqué. Chaque victoire débloque le piment 🌶️ suivant (par niveau : loyer +12 %, salaires +10 %, Étoiles Noires +25 %) et rapporte une 🔑 la première fois.</p>
@@ -630,7 +759,7 @@ function showArch(){
 }
 function showLabo(){
   modal('labo',`<h1>🔬 Labo de recherche</h1><p>Des technologies pour cette run. Caisse : <b id="laboMoney">${fmt(S.money)} ₭</b></p>
-  <div class="choices">${Object.keys(TECH).map(k=>{const t=TECH[k],c=techCost(k);
+  <div class="choices">${Object.keys(TECH).sort((a,b)=>(!!S.tech[a]-!!S.tech[b])||TECH[a].c-TECH[b].c).map(k=>{const t=TECH[k],c=techCost(k);
     if(S.tech[k])return `<div class="choice done"><div class="te">${t.e}</div><b>${t.n}</b><small>${t.d}</small>✔ ${k==='assurance'&&S.tech[k]===2?'utilisée':'acquis'}</div>`;
     if(t.req&&!S.tech[t.req])return `<div class="choice off"><div class="te">🔒</div><b>${t.n}</b><small>${t.d}</small><small>Nécessite : ${TECH[t.req].n}</small></div>`;
     return `<button class="choice" data-a="tech" data-x="${k}" data-cost="${c}"><div class="te">${t.e}</div><b>${t.n}</b><small>${t.d}</small>${fmt(c)} ₭</button>`}).join('')}</div>
@@ -638,18 +767,27 @@ function showLabo(){
 }
 
 // ====== RENDU ======
-function modal(kind,html){S.modal=kind;$('mbox').innerHTML=html;$('modal').classList.remove('hidden');$('mbox').scrollTop=0}
+const CLOSE={bld:'close',build:'close',labo:'close',help:'close',prog:'progClose'};
+function modal(kind,html){
+  const mb=$('mbox'),keep=S.modal===kind?mb.scrollTop:0;S.modal=kind;
+  mb.className=['labo','prog','build'].includes(kind)?'wide':'';
+  mb.innerHTML=(CLOSE[kind]?`<button class="mx" data-a="${CLOSE[kind]}" title="Fermer (Échap)">✕</button>`:'')+html;
+  $('modal').classList.remove('hidden');mb.scrollTop=keep;
+}
 function closeModal(){S.modal=null;$('modal').classList.add('hidden')}
 function recipeHTML(k){const r=ITEMS[k].r;return r?Object.keys(r).map(i=>`<span id="ri_${k}_${i}">${r[i]}${ITEMS[i].e}</span>`).join(' + '):'ressource brute'}
 function recipeTxt(k){const r=ITEMS[k].r;return r?Object.keys(r).map(i=>r[i]+ITEMS[i].e).join(' + '):'ressource brute'}
-function renderItems(){
-  $('items').innerHTML=Object.keys(ITEMS).map(k=>{const it=ITEMS[k],lk=!unlocked(k);
-    return `<div class="row ${lk?'locked':''}"><span class="ico">${it.e}</span><div class="nm" title="${it.n}">${it.n}<small>${lk?'🔒 à breveter au Labo':recipeHTML(k)}</small></div>
+function itemRow(k){const it=ITEMS[k],lk=!unlocked(k);
+  return `<div class="row ${lk?'locked':''}"><span class="ico">${it.e}</span><div class="nm" title="${it.n}${it.r?' — '+recipeTxt(k):''}">${it.n}<small>${lk?'🔒 à breveter au Labo':recipeHTML(k)}</small></div>
     <div class="qt"><b id="q_${k}"></b><small id="f_${k}"></small></div><span class="pr" id="p_${k}"></span>
-    <div class="btns"><button data-a="make" data-hold data-x="${k}" id="m_${k}" title="${it.r?'Cuisiner':'Récolter'} (maintenir pour répéter, Maj = ×10)">${it.r?'Cuisiner':'Récolter'}</button>
+    <div class="btns">${lk?'':`<button class="mk" data-a="make" data-hold data-x="${k}" id="m_${k}" title="${it.r?'Cuisiner':'Récolter'} (maintenir pour répéter, Maj = ×10)">${it.r?'🍳 Cuisiner':'⛏ Récolter'}</button>
     ${!it.r&&S.tech.import?`<button data-a="buy" data-hold data-x="${k}" id="b_${k}" title="Acheter au marché (1,5× le cours)">🛒</button>`:''}
-    <button data-a="sell1" data-hold data-x="${k}" id="s_${k}" title="Vendre 1 (Maj = 10)">Vendre</button>
-    <button data-a="sellAll" data-x="${k}" id="sa_${k}" title="Tout vendre">Tout</button></div></div>`}).join('');
+    <button data-a="sell1" data-hold data-x="${k}" id="s_${k}" title="Vendre 1 (Maj = 10, maintenir pour répéter)">Vendre</button>
+    <button data-a="sellAll" data-x="${k}" id="sa_${k}" title="Tout vendre">Tout</button>`}</div></div>`}
+function renderItems(){
+  const ks=Object.keys(ITEMS),raw=ks.filter(k=>!ITEMS[k].r),dish=ks.filter(k=>ITEMS[k].r&&unlocked(k)),lk=ks.filter(k=>!unlocked(k));
+  $('items').innerHTML=`<div class="grp">Ressources brutes</div>${raw.map(itemRow).join('')}<div class="grp">Plats</div>${dish.map(itemRow).join('')}`+
+    (lk.length?`<button class="lockrow" data-a="toggleLocked">${ui.locked?'▾':'▸'} 🔒 ${lk.length} recette${lk.length>1?'s':''} à breveter au Labo</button>${ui.locked?lk.map(itemRow).join(''):''}`:'');
 }
 function renderOrders(){
   $('orders').innerHTML=S.orders.map((o,i)=>`<div class="card order" id="oc_${i}"><div><b>${o.q} × ${ITEMS[o.k].e} ${ITEMS[o.k].n}</b>
@@ -662,12 +800,13 @@ function renderGrid(){
     S.moving!=null?'↔ Clique sur une autre parcelle pour y déplacer le bâtiment (Échap pour annuler)':'';
   $('grid').innerHTML=S.plots.map((b,i)=>{
     if(!b)return `<div class="tile empty" data-a="build" data-x="${i}"><div><b>＋</b>Construire</div></div>`;
-    const d=B[b.type],w=workerOf(i),a=adjBonus(i),syn=d.kind==='sell'?a.pr:a.sp,nm=nextMs(b.lvl);
-    const e=d.kind==='craft'?d.e+ITEMS[b.recipe].e:d.kind==='sell'?d.e+ITEMS[b.sell].e:d.e;
-    return `<div class="tile ${S.moving===i?'sel':''}" id="tile_${i}" data-a="open" data-x="${i}" draggable="true" data-drag="p${i}" title="${d.n} — ${KIND_TXT[d.kind]}${w?'\n👽 '+w.name+' ×'+empMult(w,d.kind).toFixed(2):''}${nm&&d.kind!=='aura'?'\nProchain palier ×2 : niveau '+nm:''}">
+    const d=B[b.type],w=workerOf(i),a=adjBonus(i),syn=d.kind==='sell'?a.pr:a.sp,nm=nextMs(b.lvl),prod=PROD.includes(d.kind)||d.kind==='deliv';
+    const e=d.kind==='craft'?d.e+ITEMS[b.recipe].e:d.kind==='sell'?d.e+ITEMS[b.sell].e:d.e,msNext=prod&&nm===b.lvl+1;
+    return `<div class="tile ${S.moving===i?'sel':''}" id="tile_${i}" data-a="open" data-x="${i}" draggable="true" data-drag="p${i}" title="${d.n} — ${KIND_TXT[d.kind]}${w?'\n👽 '+w.name+' ×'+empMult(w,d.kind).toFixed(2):''}${nm&&prod?'\nProchain palier ×2 : niveau '+nm:''}\nClic droit : améliorer · Maj + clic droit : max">
+    <span class="lv ${msMult(b.lvl)>1?'ms':''}">${b.lvl}</span>${w?`<span class="wk" title="${w.name}">👽</span>`:''}
     <div class="te">${e}</div><div class="tn">${d.n}</div>
-    <div class="tl">Niv ${b.lvl}${w?' · 👽':''}${syn>1.001?` · <span class="syn">🔗${pct(syn)}</span>`:''}</div><div class="bar"><i id="pb_${i}"></i></div><small id="ts_${i}"></small>
-    <button class="upb" data-a="quickUp" data-x="${i}" data-cost="${upCost(b)}" title="Améliorer au niveau ${b.lvl+1}">⬆ ${fmt(upCost(b))} ₭${nm===b.lvl+1&&d.kind!=='aura'?' ×2!':''}</button></div>`}).join('');
+    <div class="tl">${syn>1.001?`<span class="syn">🔗 ${pct(syn)}</span>`:'&nbsp;'}</div><div class="ts" id="ts_${i}"></div>
+    <button class="upb ${msNext?'ms':''}" data-a="quickUp" data-x="${i}" data-cost="${upCost(b)}" title="Améliorer au niveau ${b.lvl+1} (Maj = max)">⬆ ${fmt(upCost(b))} ₭${msNext?' · ×2':''}</button></div>`}).join('');
   const max=S.plots.length>=maxPlots();
   $('plotBtn').textContent=max?'Astéroïde plein':'+ Parcelle ('+fmt(plotCost())+' ₭)';
   $('plotBtn').dataset.cost=max?Infinity:plotCost();
@@ -681,7 +820,7 @@ function renderStaff(){
   $('staff').innerHTML=S.staff.map((s,i)=>{const b=s.at!=null&&S.plots[s.at];
     return `<div class="card" draggable="true" data-drag="s${i}" title="Glisse-moi sur un bâtiment"><div><b>${s.name}</b> ${staffChips(s)}
     <small>${fmt(s.wage)} ₭/jour · ${b?'📍 '+B[b.type].n+' → ×'+empMult(s,B[b.type].kind).toFixed(2):'<span class="warn">non affecté — glisse-le sur un bâtiment</span>'}</small></div>
-    <div style="white-space:nowrap"><button data-a="assign" data-x="${i}" class="${S.assigning===i?'on':''}">Affecter</button> <button data-a="fire" data-x="${i}" title="Virer">✖</button></div></div>`}).join('')||'<small style="color:var(--dim)">Personne. Tu fais tout toi-même.</small>';
+    <div style="white-space:nowrap"><button data-a="assign" data-x="${i}" class="${S.assigning===i?'on':''}">Affecter</button> <button data-a="fire" data-x="${i}" class="${ui.fire===i?'danger':''}" title="Virer">${ui.fire===i?'Sûr ?':'✖'}</button></div></div>`}).join('')||'<small style="color:var(--dim)">Personne. Tu fais tout toi-même.</small>';
   const full=S.staff.length>=staffMax();
   $('cands').innerHTML=S.cands.map((s,i)=>`<div class="card"><div><b>${s.name}</b> ${staffChips(s)}<small>${fmt(s.wage)} ₭/jour</small></div>
     <button data-a="hire" data-x="${i}" data-cost="${full?Infinity:s.wage*2}">${full?'Équipe pleine':'Embaucher ('+fmt(s.wage*2)+' ₭)'}</button></div>`).join('')||'<small style="color:var(--dim)">Plus personne ne veut bosser ici aujourd\'hui.</small>';
@@ -696,7 +835,7 @@ function renderSpeeds(){
   $('speeds').innerHTML=[[0,'⏸'],[.5,'½×'],[1,'1×'],[2,'2×'],[4,'4×']].map(([v,l])=>`<button data-a="speed" data-x="${v}" class="${S.speed===v?'on':''}" title="${v?'Vitesse '+l:'Pause (Espace)'}">${l}</button>`).join(' ');
 }
 function renderAll(){renderItems();renderGrid();renderStaff();renderPerks();renderSpeeds();renderOrders();
-  $('event').innerHTML=`${world().e} ${world().n} · 🌶️ ${S.heat} · ${S.won?'bail racheté ♾️':'objectif : jour '+world().win} &nbsp;|&nbsp; 📡 <b>${S.event.n}</b> — ${S.event.d}`;$('log').innerHTML=S.log.map(l=>`<div>${l}</div>`).join('');update()}
+  $('event').innerHTML=`${world().e} ${world().n} · 🌶️ ${S.heat} · ${S.won?'bail racheté ♾️':'objectif : jour '+world().win} &nbsp;·&nbsp; 📡 <b>${S.event.n}</b> — ${S.event.d}`;$('log').innerHTML=S.log.map(l=>`<div>${l}</div>`).join('');update()}
 function checkTuto(){
   if(S.tuto>=TUTO.length){if($('tuto').textContent)$('tuto').textContent='';return}
   if(TUTO[S.tuto][1]()){
@@ -707,40 +846,52 @@ function checkTuto(){
 }
 function update(){
   frame++;
-  const due=rent()+wages(),proj=S.money+S.ema*Math.max(0,S.t);
+  const due=rent()+wages(),proj=S.money+S.ema*Math.max(0,S.t),st=S.money>=due?'ok':proj>=due?'warn':'bad';
   $('money').textContent=fmt(S.money)+' ₭';
-  $('income').textContent='≈ +'+fmt(S.ema)+' ₭/s';
-  $('day').textContent=S.day+(S.won?'':' / '+world().win)+(isBoss(S.day)?' 👹':'');
-  const rb=$('rentbar');rb.className='pbar '+(S.money>=due?'ok':proj>=due?'':'bad');
-  rb.firstElementChild.style.width=clamp(S.money/due*100,0,100)+'%';
-  rb.lastElementChild.textContent=fmt(Math.min(S.money,due))+' / '+fmt(due)+' ₭';
-  $('dueTxt').textContent=S.money>=due?'✔ de quoi payer':proj>=due?'— ça devrait passer':'— il manquera ≈ '+fmt(due-proj)+' ₭';
-  $('dueTxt').className=S.money>=due?'up':proj>=due?'warn':'down';
+  $('income').textContent='+'+fmt(S.ema)+' ₭/s';
+  $('day').textContent=S.day+(S.won?' ♾️':' / '+world().win)+(isBoss(S.day)?' 👹':'');
+  const p=clamp(S.t/dayLen(),0,1);$('clock').style.setProperty('--p',p);$('clock').classList.toggle('low',p<.2);
+  $('clockT').textContent=S.speed?Math.ceil(Math.max(0,S.t))+'s':'⏸';
+  $('rentBox').className='hs '+st;$('rentIco').textContent=st==='ok'?'✅':st==='warn'?'⏳':'🔥';
+  $('due').textContent=fmt(due)+' ₭';
+  $('dueTxt').textContent=st==='ok'?'couvert':st==='warn'?'ça devrait passer':'il manquera ≈ '+fmt(due-proj)+' ₭';
+  $('dueTxt').className='sub '+(st==='ok'?'up':st==='warn'?'warn':'down');
   $('rep').textContent='×'+fmt(mods().rep);
-  $('timer').firstElementChild.style.width=clamp(S.t/dayLen()*100,0,100)+'%';
-  $('timer').lastElementChild.textContent=S.speed?Math.ceil(Math.max(0,S.t))+' s':'⏸ PAUSE';
   if(frame%5===0)flowCache=flows();
   const cp=mods().click;
   for(const k in ITEMS){
+    const qe=$('q_'+k);if(!qe)continue;
     const q=Math.floor(S.inv[k]),lk=!unlocked(k);
-    $('q_'+k).textContent=fmt(q);
+    qe.textContent=fmt(q);
     const fl=flowCache[k]||0,fe=$('f_'+k);
     fe.textContent=Math.abs(fl)<.005?'':(fl>0?'+':'−')+fmt(Math.abs(fl))+'/s';fe.className=fl>0?'up':'down';
-    const p=$('p_'+k),t=S.trend[k]*Math.min(1,S.sat[k]);
-    p.textContent=fmt(price(k))+' ₭ '+(t>1.05?'▲':t<.95?'▼':'•');p.className='pr '+(t>1.05?'up':t<.95?'down':'');
-    p.title='Tendance '+pct(S.trend[k])+' · saturation '+pct(Math.min(1,S.sat[k]));
-    $('m_'+k).disabled=lk||(ITEMS[k].r?maxCraft(k)<1:false);
+    const pe=$('p_'+k),t=S.trend[k]*Math.min(1,S.sat[k]);
+    pe.textContent=fmt(price(k))+' ₭ '+(t>1.05?'▲':t<.95?'▼':'•');pe.className='pr '+(t>1.05?'up':t<.95?'down':'');
+    pe.title='Tendance '+pct(S.trend[k])+' · saturation '+pct(Math.min(1,S.sat[k]));
+    if(lk)continue;
+    $('m_'+k).disabled=ITEMS[k].r?maxCraft(k)<1:false;
     $('s_'+k).disabled=$('sa_'+k).disabled=q<1;
     const bb=$('b_'+k);if(bb){bb.disabled=S.money<buyPrice(k);bb.title='Acheter '+fmt(cp)+' pour '+fmt(buyPrice(k)*cp)+' ₭ (Maj = ×10)'}
-    if(ITEMS[k].r&&!lk)for(const i in ITEMS[k].r){const el=$('ri_'+k+'_'+i);if(el)el.className=S.inv[i]<ITEMS[k].r[i]?'down':''}
+    if(ITEMS[k].r)for(const i in ITEMS[k].r){const el=$('ri_'+k+'_'+i);if(el)el.className=S.inv[i]<ITEMS[k].r[i]?'down':''}
   }
   S.orders.forEach((o,i)=>{const b=$('ord_'+i);if(!b)return;const q=Math.floor(S.inv[o.k]);b.disabled=q<o.q;b.className=q>=o.q?'pri':'';$('oc_'+i).className='card order'+(q>=o.q?' ready':'');$('oq_'+i).textContent=Math.min(q,o.q)+'/'+o.q+' en stock'});
-  S.plots.forEach((b,i)=>{if(!b)return;const pb=$('pb_'+i);if(pb){pb.style.width=clamp(b.prog*100,0,100)+'%';const ts=$('ts_'+i);ts.textContent=b.st||'';ts.className=b.stuck?'down':'';$('tile_'+i).classList.toggle('stuck',!!b.stuck)}});
+  S.plots.forEach((b,i)=>{if(!b)return;const ts=$('ts_'+i);if(!ts)return;
+    if(ts.textContent!==(b.st||''))ts.textContent=b.st||'';ts.className='ts'+(b.stuck?' down':'');
+    const tl=$('tile_'+i);tl.classList.toggle('stuck',!!b.stuck);tl.classList.toggle('act',!b.stuck&&!S.block&&!!S.speed)});
   document.querySelectorAll('[data-cost]').forEach(b=>b.disabled=S.money<+b.dataset.cost);
   const nt=Object.keys(TECH).filter(k=>!S.tech[k]&&(!TECH[k].req||S.tech[TECH[k].req])&&S.money>=techCost(k)).length;
-  $('laboBtn').textContent='🔬 Labo'+(nt?' ('+nt+')':'');$('laboBtn').className=nt?'glow':'';
+  $('laboBtn').textContent='🔬 Labo'+(nt?' ('+nt+')':'');$('laboBtn').className='hbtn'+(nt?' glow':'');
   if($('laboMoney'))$('laboMoney').textContent=fmt(S.money)+' ₭';
+  if(S.modal==='bld'&&frame%5===0&&S.plots[S.cur]&&$('bldInfo'))$('bldInfo').innerHTML=bldInfo(S.cur);
   if(!S.block)checkTuto();
+}
+function bldInfo(i){
+  const b=S.plots[i],d=B[b.type],a=adjBonus(i),w=workerOf(i);
+  if(d.kind==='aura')return `Aura : <b>${pct(1+auraPow(b)*(1+pk('trou')))}</b> de vitesse sur les voisins`;
+  if(d.kind==='neon')return `Réputation globale <b>+${Math.round((.06+.02*b.lvl)*100)} %</b> · stands voisins <b>+20 %</b> de prix`;
+  const r=rateOf(b,i,a),ex=`${w?' · 👽 '+w.name+' ×'+empMult(w,d.kind).toFixed(2):' · aucun employé'}${a.sp>1.001?' · synergie vitesse <b>'+pct(a.sp)+'</b>':''}${a.pr>1.001?' · synergie prix <b>'+pct(a.pr)+'</b>':''}${msMult(b.lvl)>1?' · paliers <b>×'+msMult(b.lvl)+'</b>':''}`;
+  if(d.kind==='deliv')return `Une livraison toutes les <b>${fmt(1/r)} s</b>${ex} · état : <b>${b.st||'—'}</b>`;
+  return `Cadence : <b>${fmt(r)}/s</b>${ex}${b.stuck?' · <b class="down">'+b.st+'</b>':''}`;
 }
 function showBuilding(i){
   const b=S.plots[i],d=B[b.type],a=adjBonus(i),nm=nextMs(b.lvl);
@@ -749,14 +900,18 @@ function showBuilding(i){
   if(d.kind==='sell')cfg=`<h2>Produit à vendre automatiquement</h2><div class="choices">${Object.keys(ITEMS).filter(unlocked).map(k=>`<div class="choice ${b.sell===k?'cur':''}" data-a="setSell" data-x="${k}"><div class="te">${ITEMS[k].e}</div><b>${ITEMS[k].n}</b><small>${fmt(price(k))} ₭</small></div>`).join('')}</div>`;
   S.cur=i;
   const w=workerOf(i);
-  const info=d.kind==='aura'?`Aura : <b>${pct(1+auraPow(b)*(1+pk('trou')))}</b> de vitesse sur les voisins`:
-    `Cadence : <b>${fmt(rateOf(b,i,a))}/s</b>${w?' · 👽 '+w.name+' ×'+empMult(w,d.kind).toFixed(2):' · aucun employé'}${a.sp>1.001?' · synergie vitesse <b>'+pct(a.sp)+'</b>':''}${a.pr>1.001?' · synergie prix <b>'+pct(a.pr)+'</b>':''}${msMult(b.lvl)>1?' · paliers <b>×'+msMult(b.lvl)+'</b>':''}`;
-  modal('bld',`<h1>${d.e} ${d.n} — Niv ${b.lvl}</h1><p>${info}</p><p>${KIND_TXT[d.kind]}${nm&&d.kind!=='aura'?' Prochain palier <b>×2</b> au niveau '+nm+'.':''}</p>${cfg}
+  const nmT=nm&&PROD.concat('deliv').includes(d.kind)?' Prochain palier <b>×2</b> au niveau '+nm+'.':'';
+  modal('bld',`<h1>${d.e} ${d.n} — Niv ${b.lvl}</h1><p id="bldInfo">${bldInfo(i)}</p><p>${KIND_TXT[d.kind]}${nmT}</p>${cfg}
   <p><button class="pri" data-a="upgrade" data-cost="${upCost(b)}">⬆ Améliorer (${fmt(upCost(b))} ₭)</button>
   <button data-a="upMax" data-cost="${upCost(b)}">⬆⬆ Max</button>
   <button data-a="move">↔ Déplacer</button>
-  <button data-a="demolish" title="Rembourse la moitié du prix de base">💥 Démolir (+${fmt(d.cost/2)} ₭)</button> <button data-a="close">Fermer</button></p>`);
+  <button data-a="demolish" title="Rembourse ${pk('recyclage')?'tout':'la moitié du'} prix de base">💥 Démolir (+${fmt(d.cost*(pk('recyclage')?1:.5))} ₭)</button> <button data-a="close">Fermer</button></p>`);
 }
+function deliverOrder(i,e,auto){
+  const o=S.orders[i];if(!o||S.inv[o.k]<o.q)return;const g=orderPay(o);S.inv[o.k]-=o.q;S.money+=g;S.earned+=g;S.repB+=.05;meta.orders++;if(auto)meta.drone=(meta.drone||0)+1;
+  S.orders.splice(i,1);renderOrders();float(e,'+'+fmt(g)+' ₭');log(`${auto?'🚁':'📦'} Commande livrée à « ${o.c} » : +${fmt(g)} ₭, réputation +5 %.`);
+}
+function upTile(i,max,e){const b=S.plots[i];if(!b)return;let n=0;while(S.money>=upCost(b)&&(max||!n)){S.money-=upCost(b);b.lvl++;n++}if(n){float(e,'Niv '+b.lvl);renderGrid()}}
 function float(e,t){
   if(!e||e.clientX==null)return;
   const f=document.createElement('div');f.className='float';f.textContent=t;
@@ -775,8 +930,9 @@ const A={
   buy(k,e){const p=buyPrice(k),n=Math.min(mods().click*x10(e),Math.floor(S.money/p));if(n<=0)return;S.money-=n*p;S.inv[k]+=n;S.sat[k]=Math.min(1.6,S.sat[k]+n*.012/mods().rep);float(e,'+'+fmt(n)+ITEMS[k].e)},
   sell1(k,e){const g=sell(k,x10(e));if(g)float(e,'+'+fmt(g)+' ₭')},
   sellAll(k,e){const g=sell(k,Infinity);if(g)float(e,'+'+fmt(g)+' ₭')},
-  deliver(i,e){const o=S.orders[i];if(!o||S.inv[o.k]<o.q)return;const g=orderPay(o);S.inv[o.k]-=o.q;S.money+=g;S.earned+=g;S.repB+=.05;meta.orders++;
-    S.orders.splice(i,1);renderOrders();float(e,'+'+fmt(g)+' ₭');log(`📦 Commande livrée à « ${o.c} » : +${fmt(g)} ₭, réputation +5 %.`)},
+  deliver(i,e){deliverOrder(+i,e)},
+  toggleLocked(){ui.locked=!ui.locked;renderItems()},
+  help(){if(S.modal==='help')return closeModal();if(S.block&&S.modal)return;showHelp()},
   speed(v){S.speed=+v;if(S.speed)S.prevSpeed=S.speed;renderSpeeds()},
   labo(){if(S.block)return;S.modal==='labo'?closeModal():showLabo()},
   tech(k){const c=techCost(k);if(S.money<c||S.tech[k])return;S.money-=c;S.tech[k]=1;S.nTech=(S.nTech||0)+1;toast(`🔬 ${TECH[k].e} ${TECH[k].n} : ${TECH[k].d}`);log('🔬 Recherche : '+TECH[k].n);renderItems();renderPerks();showLabo()},
@@ -785,9 +941,11 @@ const A={
     if(S.assigning!=null)return;
     if(S.moving!=null){swapPlots(S.moving,i);S.moving=null;renderGrid();renderStaff();return}
     S.cur=i;
-    modal('build',`<h1>🏗️ Construire</h1><p>L'emplacement compte : les voisins (haut, bas, gauche, droite) se donnent des bonus.</p><div class="choices">${Object.keys(B).map(t=>`<button class="choice" data-a="doBuild" data-x="${t}" data-cost="${buildCost(t)}"><div class="te">${B[t].e}</div><b>${B[t].n}</b><small>${B[t].kind==='ext'?'Produit '+ITEMS[B[t].res].n:B[t].kind==='craft'?'Cuisine une recette en boucle':B[t].kind==='sell'?'Vend un produit tout seul':'Booste ses voisins'}</small><small>${KIND_TXT[B[t].kind]}</small>${fmt(buildCost(t))} ₭</button>`).join('')}</div><button data-a="close">Annuler</button>`);
+    modal('build',`<h1>🏗️ Construire</h1><p>L'emplacement compte : les voisins (haut, bas, gauche, droite) se donnent des bonus.</p><div class="choices">${Object.keys(B).map(t=>{const d=B[t],lab=d.kind==='ext'?'Produit '+ITEMS[d.res].n:d.kind==='craft'?'Cuisine une recette en boucle':d.kind==='sell'?'Vend un produit tout seul':d.kind==='aura'?'Booste ses voisins':d.kind==='neon'?'Attire la clientèle':'Livre les commandes';
+  return bOpen(t)?`<button class="choice" data-a="doBuild" data-x="${t}" data-cost="${buildCost(t)}"><div class="te">${d.e}</div><b>${d.n}</b><small>${lab}</small><small>${KIND_TXT[d.kind]}</small>${fmt(buildCost(t))} ₭</button>`:
+  `<div class="choice off"><div class="te">🔒</div><b>${d.n}</b><small>${lab}</small><small>Labo : ${TECH[d.tech].n}</small></div>`}).join('')}</div><button data-a="close">Annuler</button>`);
   },
-  doBuild(t){const c=buildCost(t);if(S.money<c)return;S.money-=c;S.plots[S.cur]={type:t,lvl:1,prog:0,recipe:'viande',sell:'kebab',st:''};renderGrid();log(`🏗️ ${B[t].n} construit. Ça sent déjà le graillon.`);
+  doBuild(t){const c=buildCost(t);if(S.money<c||!bOpen(t))return;S.money-=c;S.plots[S.cur]={type:t,lvl:1,prog:0,recipe:'viande',sell:'kebab',st:''};renderGrid();log(`🏗️ ${B[t].n} construit. Ça sent déjà le graillon.`);
     B[t].kind==='craft'||B[t].kind==='sell'?showBuilding(S.cur):closeModal()},
   open(i){
     i=+i;
@@ -795,17 +953,17 @@ const A={
     if(S.moving!=null){if(S.moving!==i)swapPlots(S.moving,i);S.moving=null;renderGrid();renderStaff();return}
     showBuilding(i);
   },
-  quickUp(i,e){const b=S.plots[i],c=upCost(b);if(S.money<c)return;S.money-=c;b.lvl++;float(e,'Niv '+b.lvl);renderGrid()},
+  quickUp(i,e){upTile(+i,e&&e.shiftKey,e)},
   upgrade(){const b=S.plots[S.cur],c=upCost(b);if(S.money<c)return;S.money-=c;b.lvl++;renderGrid();showBuilding(S.cur)},
   upMax(){const b=S.plots[S.cur];while(S.money>=upCost(b)){S.money-=upCost(b);b.lvl++}renderGrid();showBuilding(S.cur)},
   move(){S.moving=S.cur;S.assigning=null;closeModal();renderGrid();renderStaff()},
-  demolish(){S.money+=B[S.plots[S.cur].type].cost/2;S.staff.forEach(s=>{if(s.at===S.cur)s.at=null});S.plots[S.cur]=null;closeModal();renderGrid();renderStaff()},
+  demolish(){S.money+=B[S.plots[S.cur].type].cost*(pk('recyclage')?1:.5);S.staff.forEach(s=>{if(s.at===S.cur)s.at=null});S.plots[S.cur]=null;closeModal();renderGrid();renderStaff()},
   setRecipe(k){S.plots[S.cur].recipe=k;S.plots[S.cur].prog=0;renderGrid();showBuilding(S.cur)},
   setSell(k){S.plots[S.cur].sell=k;renderGrid();showBuilding(S.cur)},
   close(){closeModal()},
   plot(){const c=plotCost();if(S.money<c||S.plots.length>=maxPlots())return;S.money-=c;S.bought++;S.plots.push(null);renderGrid()},
   hire(i){const s=S.cands[i];if(S.staff.length>=staffMax()||S.money<s.wage*2)return;S.money-=s.wage*2;S.hired=1;S.staff.push(s);S.cands.splice(i,1);renderStaff();log(`🤝 ${s.name} (${s.trait}) rejoint l'équipe. Glisse sa carte sur un bâtiment.`)},
-  fire(i){i=+i;const s=S.staff.splice(i,1)[0];S.assigning=null;renderStaff();renderGrid();log(`👋 ${s.name} est renvoyé par le sas.`)},
+  fire(i){i=+i;if(ui.fire!==i){ui.fire=i;renderStaff();return}ui.fire=null;const s=S.staff.splice(i,1)[0];S.assigning=null;renderStaff();renderGrid();log(`👋 ${s.name} est renvoyé par le sas.`)},
   assign(i){i=+i;S.moving=null;S.assigning=S.assigning===i?null:i;renderStaff();renderGrid()},
   reroll(){const c=10*Math.pow(1.3,S.day-1);if(S.money<c)return;S.money-=c;genCands();renderStaff()},
   perk(k){S.perks[k]=pk(k)+1;if(PERKS[k].now)PERKS[k].now();log(`✨ Bonus : ${PERKS[k].n}`);nextDay()},
@@ -822,15 +980,20 @@ const A={
   cashout(){gameOver(0,true)},
   perkReroll(){S.rerolled=1;showPerks(S.lastDue)},
   arch(k){clearRun();newRun(k,selW,selH);S.block=false;closeModal();renderAll();toast(`${ARCH[k].e} ${ARCH[k].n} — ${ARCH[k].d}`)},
-  resume(){const r=loadRun();if(!r)return showWorlds();S=r;S.block=false;S.assigning=S.moving=null;closeModal();renderAll()},
+  resume(){const r=loadRun();if(!r)return showWorlds();S=r;S.block=false;S.assigning=S.moving=null;S.modal=null;closeModal();renderAll()},
   restart(){newRun();renderAll();showStart()}
 };
 document.addEventListener('click',e=>{
-  if(e.target.id==='modal'&&['bld','build','labo'].includes(S.modal)){closeModal();return}
-  if(e.target.id==='modal'&&S.modal==='prog'){A.progClose();return}
-  const el=e.target.closest('[data-a]');if(!el||el.disabled)return;
+  if(e.target.id==='modal'&&CLOSE[S.modal]){A[CLOSE[S.modal]]();return}
+  const el=e.target.closest('[data-a]');
+  if(ui.fire!=null&&!(el&&el.dataset.a==='fire')){ui.fire=null;renderStaff()}
+  if(!el||el.disabled)return;
+  if(el.tagName==='BUTTON')el.blur();
   A[el.dataset.a](el.dataset.x,e);update();
 });
+// clic droit sur un bâtiment = améliorer (Maj = max)
+document.addEventListener('contextmenu',e=>{const t=e.target.closest&&e.target.closest('.tile[data-a="open"]');if(!t||S.block)return;e.preventDefault();upTile(+t.dataset.x,e.shiftKey,e);update()});
+document.addEventListener('pointerover',e=>{const t=e.target.closest&&e.target.closest('.tile[data-a="open"]');ui.hover=t?+t.dataset.x:null});
 // maintenir un bouton = répéter
 let holdT=null,holdI=null;
 function stopHold(){clearTimeout(holdT);clearInterval(holdI);holdT=holdI=null}
@@ -842,22 +1005,30 @@ document.addEventListener('pointerdown',e=>{
 document.addEventListener('pointerout',e=>{if(holdT&&e.target.closest&&e.target.closest('[data-hold]'))stopHold()});
 // glisser-déposer : bâtiments et employés
 document.addEventListener('dragstart',e=>{const t=e.target.closest&&e.target.closest('[data-drag]');if(!t)return;e.dataTransfer.setData('text/plain',t.dataset.drag);e.dataTransfer.effectAllowed='move'});
-document.addEventListener('dragover',e=>{if(e.target.closest&&e.target.closest('.tile'))e.preventDefault()});
+const clearDrop=()=>document.querySelectorAll('.tile.drop').forEach(t=>t.classList.remove('drop'));
+document.addEventListener('dragover',e=>{const t=e.target.closest&&e.target.closest('.tile');if(!t)return;e.preventDefault();if(!t.classList.contains('drop')){clearDrop();t.classList.add('drop')}});
+document.addEventListener('dragend',clearDrop);
 document.addEventListener('drop',e=>{
-  const t=e.target.closest&&e.target.closest('.tile');if(!t)return;e.preventDefault();
+  clearDrop();const t=e.target.closest&&e.target.closest('.tile');if(!t)return;e.preventDefault();
   const d=e.dataTransfer.getData('text/plain'),i=+t.dataset.x;
   if(d[0]==='p'){const a=+d.slice(1);if(a!==i)swapPlots(a,i)}else if(d[0]==='s')assignTo(+d.slice(1),i);
   S.assigning=S.moving=null;renderGrid();renderStaff();
 });
 document.addEventListener('keydown',e=>{
-  if(e.code==='Escape'&&['bld','build','labo'].includes(S.modal)){closeModal();return}
+  if(e.ctrlKey||e.metaKey||e.altKey)return;
+  if(e.code==='Escape'&&CLOSE[S.modal]){A[CLOSE[S.modal]]();return}
+  if(e.code==='KeyP'){A.progress();return}
+  if(e.code==='KeyH'){A.help();return}
   if(S.block)return;
-  if(e.code==='Space'){e.preventDefault();S.speed=S.speed?0:S.prevSpeed||1;renderSpeeds()}
+  if(e.code==='Space'){e.preventDefault();if(document.activeElement)document.activeElement.blur();S.speed=S.speed?0:S.prevSpeed||1;renderSpeeds();update()}
   const sp={Digit1:.5,Digit2:1,Digit3:2,Digit4:4,Numpad1:.5,Numpad2:1,Numpad3:2,Numpad4:4}[e.code];
-  if(sp)A.speed(sp);
+  if(sp){A.speed(sp);update()}
   if(e.code==='KeyL')A.labo();
+  if(e.code==='KeyU'&&ui.hover!=null&&!S.modal){upTile(ui.hover,e.shiftKey);update()}
+  if(e.code==='KeyM'&&ui.hover!=null&&!S.modal&&S.plots[ui.hover]){S.cur=ui.hover;A.move()}
   if(e.code==='Escape'){S.assigning=S.moving=null;renderGrid();renderStaff()}
 });
+document.addEventListener('keyup',e=>{if(e.code==='Space')e.preventDefault()});
 
 // ====== GO ======
 newRun();renderAll();showStart();
